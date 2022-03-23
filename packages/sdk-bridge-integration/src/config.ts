@@ -3,55 +3,54 @@ import USDTIcon from './assets/USDT.png'
 import DEVIcon from './assets/DEV.png'
 import wADAIcon from './assets/wADA.png'
 
-import { TokenIdentifier } from '@nomad-xyz/sdk/nomad'
+import * as config from '@nomad-xyz/configuration'
 
-export type NetworkName = 'kovan' | 'moonbasealpha' | 'rinkeby' | 'milkomedatestnet'
-export type TokenName = 'WETH' | 'USDT' | 'ETH' | 'DEV'
+/******** NOMAD NETWORKS CONFIG ********/
+const isProduction = process.env.production === 'production'
+const env = isProduction ? 'production' : 'development'
+export const nomadConfig = config.getBuiltin(env)
 
+/******** MISC CONFIG ********/
+// used to retrieve message proofs for processing tx on receiving chain
+export const s3URL = isProduction ? 'https://nomadxyz-production-proofs.s3.us-west-2.amazonaws.com/' : 'https://nomadxyz-development-proofs.s3.us-west-2.amazonaws.com/'
+
+/******** TOKEN TYPES ********/
+export type TokenIdentifier = {
+  domain: NetworkName
+  id: string
+}
 export type TokenMetadata = {
-  nativeNetwork: NetworkName // e.g. 'kovan' for 'WETH' or 'USDT'
+  nativeNetwork: NetworkName // e.g. 'ethereum' for 'WETH' or 'USDT'
   symbol: string
   icon: string
   decimals: number
-  tokenIdentifier: TokenIdentifier // { domain: networkName, }
-  nativeOnly: boolean // only exists on native network. e.g. 'ETH' can only be on Kovan. It is wrapped (WETH) on Moonbase Alpha
+  tokenIdentifier: TokenIdentifier // { domain: networkName, id: tokenAddress(on native chain) }
+  nativeOnly: boolean // only exists on native network. e.g. 'ETH' can only be on Ethereum. It is wrapped (WETH) on other networks
 }
 
-export type NetworkMetadata = {
-  name: NetworkName // kovan or moonbasealpha
-  chainID: number // for metamask
-  domainID: number // nomad domain ID
-  nativeToken: TokenMetadata
-  rpcUrl: string
-  blockExplorer: string
-  confirmationTimeInMinutes: number // dispute period.  For testnet Kovan/Moonbase Alpha it's 2 minutes. For mainnet Ethereum/Moonbeam it's 30 minutes
-}
-
-export const WETH: TokenIdentifier = {
+/******** TOKEN IDENTIFIERS ********/
+const WETH: TokenIdentifier = {
   domain: 'kovan', // must be lowercase
   id: '0xd0a1e359811322d97991e03f863a0c30c2cf029c',
 }
-
-export const USDT: TokenIdentifier = {
+const USDT: TokenIdentifier = {
   domain: 'kovan',
   id: '0x13512979ade267ab5100878e2e0f485b568328a4',
 }
-
-export const DEV: TokenIdentifier = {
+const DEV: TokenIdentifier = {
   domain: 'moonbasealpha',
   id: '0x0000000000000000000000000000000000000802',
 }
-
-export const rWETH: TokenIdentifier= {
+const rWETH: TokenIdentifier= {
   domain: 'rinkeby',
   id: '0xc778417e063141139fce010982780140aa0cd5ab'
 }
-
 const wADA: TokenIdentifier = {
   domain: 'milkomedatestnet',
   id: '0x1a40217B16E7329E27FDC9cED672e1F264e07Cc2'
 }
 
+/******** TOKENS CONFIG ********/
 export const tokens: { [key: string]: TokenMetadata } = {
   ETH: {
     nativeNetwork: 'rinkeby',
@@ -119,42 +118,14 @@ export const tokens: { [key: string]: TokenMetadata } = {
   }
 }
 
-export const networks: { [key: string]: NetworkMetadata } = {
-  rinkeby: {
-    name: 'rinkeby',
-    chainID: 4,
-    domainID: 2000,
-    nativeToken: tokens.rETH,
-    rpcUrl: process.env.VUE_APP_RINKEBY_RPC!,
-    blockExplorer: 'https://rinkeby.etherscan.io/',
-    confirmationTimeInMinutes: 2
-  },
-  kovan: {
-    name: 'kovan', // must be lowercase
-    chainID: 42,
-    domainID: 3000,
-    nativeToken: tokens.ETH,
-    rpcUrl:
-      process.env.VUE_APP_KOVAN_RPC!,
-    blockExplorer: 'https://kovan.etherscan.io',
-    confirmationTimeInMinutes: 2
-  },
-  moonbasealpha: {
-    name: 'moonbasealpha',
-    chainID: 1287,
-    domainID: 5000,
-    nativeToken: tokens.DEV,
-    rpcUrl: process.env.VUE_APP_MOONBASEALPHA_RPC!,
-    blockExplorer: 'https://moonbase-blockscout.testnet.moonbeam.network',
-    confirmationTimeInMinutes: 2,
-  },
-  milkomedatestnet: {
-    name: 'milkomedatestnet',
-    chainID: 200101,
-    domainID: 8000,
-    nativeToken: tokens.wADA,
-    rpcUrl: process.env.VUE_APP_MILKOMEDA_RPC!,
-    blockExplorer: 'http://use-util.cloud.milkomeda.com:4000',
-    confirmationTimeInMinutes: 2,
-  },
-}
+/******** DYNAMIC TYPES ********/
+
+// dynamically generate NetworkName type from config values
+// type NetworkName = 'ethereum' | 'moonbeam' | 'milkomedaC1' | etc...
+const networkList = [...nomadConfig.networks] as const
+export type NetworkName = typeof networkList[number]
+
+// dynamically generate TokenName type from config values
+// type TokenName = 'ETH' | 'WETH' | 'USDC' | etc...
+const tokenList = [...Object.keys(tokens)] as const
+export type TokenName = typeof tokenList[number]
