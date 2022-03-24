@@ -81,7 +81,7 @@ interface SendData {
 }
 
 export default defineComponent({
-  name: 'Bridge',
+  name: 'ui-bridge',
   emits: ['connect', 'newTx'],
   props: {
     address: {

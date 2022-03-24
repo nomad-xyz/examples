@@ -11,7 +11,7 @@
 import { defineComponent, h } from 'vue';
 import { NDataTable } from 'naive-ui';
 import { truncateAddr, TXData } from '../utils/sdk';
-import TxData from './TxData.vue'
+import UiTxData from './TxData.vue'
 
 const createColumns = () => {
   return [
@@ -20,7 +20,7 @@ const createColumns = () => {
       expandable: () => true,
       renderExpand: (rowData: TXData) => {
         return h(
-          TxData,
+          UiTxData,
           { tx: rowData }
         )
       }
@@ -44,7 +44,7 @@ const createColumns = () => {
 }
 
 export default defineComponent({
-  name: 'History',
+  name: 'ui-history',
   components: {
     NDataTable
   },

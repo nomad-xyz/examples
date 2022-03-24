@@ -33,7 +33,7 @@ import {
 } from '../utils/sdk';
 
 export default defineComponent({
-  name: 'Transaction Data',
+  name: 'ui-transaction-data',
   props: {
     tx: {
       type: Object,

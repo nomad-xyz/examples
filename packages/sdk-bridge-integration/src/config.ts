@@ -3,13 +3,13 @@ import USDTIcon from './assets/USDT.png'
 import DEVIcon from './assets/DEV.png'
 import wADAIcon from './assets/wADA.png'
 
-import { getBuiltin} from '@nomad-xyz/configuration'
+import * as config from '@nomad-xyz/configuration'
 import { BytesLike } from 'ethers'
 
 /******** NOMAD NETWORKS CONFIG ********/
 const isProduction = process.env.production === 'production'
 const env = isProduction ? 'production' : 'development'
-export const nomadConfig = getBuiltin(env)
+export const nomadConfig = config.getBuiltin(env)
 nomadConfig.bridgeGui = {
   // MAINNET:
   // 'ethereum': {
@@ -47,6 +47,7 @@ nomadConfig.bridgeGui = {
     nativeTokenSymbol: 'tEVMOS',
   }
 }
+
 
 /******** MISC CONFIG ********/
 // used to retrieve message proofs for processing tx on receiving chain
@@ -184,7 +185,8 @@ export const tokens: { [key: string]: TokenMetadata } = {
     decimals: 18,
     tokenIdentifier: wADA,
     nativeOnly: false,
-  }
+  },
+  // TODO: tEVMOS
 }
 
 /******** DYNAMIC TYPES ********/

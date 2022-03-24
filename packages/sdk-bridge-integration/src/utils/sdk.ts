@@ -13,8 +13,14 @@ import {
   s3URL,
 } from '@/config'
 
+let nomad: BridgeContext
+import('@/config').then((a) => {
+  // `a` is imported and can be used here
+  nomad = instantiateNomad()
+});
+
 const { ethereum } = window as any
-const nomad = instantiateNomad()
+// const nomad = instantiateNomad()
 
 function instantiateNomad(): BridgeContext {
   const context = new BridgeContext(nomadConfig)
