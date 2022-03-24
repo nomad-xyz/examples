@@ -1,12 +1,21 @@
 // import { NomadContext, dev } from '@nomad-xyz/sdk'
 import { BridgeContext } from '@nomad-xyz/sdk-bridge'
+import { utils, BigNumber } from 'ethers'
 // import * as config from '@nomad-xyz/configuration'
-import { nomadConfig } from '@/config'
+import {
+  nomadConfig,
+  tokens,
+  NetworkName,
+  TokenName,
+  TokenMetadata,
+  TokenIdentifier,
+  chainIdToDomainMapping
+} from '@/config'
 // import { TokenIdentifier } from '@nomad-xyz/sdk/nomad'
 // import { Web3Provider } from '@ethersproject/providers'
 // import { BigNumber, providers, utils, BytesLike } from 'ethers'
 // import { TransferMessage } from '@nomad-xyz/sdk/nomad/messages/BridgeMessage'
-// import { ERC20__factory } from '@nomad-xyz/contract-interfaces/bridge'
+import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 
 // import {
 //   networks,
@@ -16,7 +25,6 @@ import { nomadConfig } from '@/config'
 //   NetworkMetadata,
 //   TokenMetadata
 // } from '../config'
-import { TokenMetadata } from '@/config'
 
 const { ethereum } = window as any
 const nomad = instantiateNomad()
@@ -60,23 +68,25 @@ function instantiateNomad(): BridgeContext {
  * @param token The token metadata
  * @returns True if native, false if otherwise
  */
-export function isNativeToken(network: string, token: TokenMetadata): boolean {
+export function isNativeToken(network: NetworkName, token: TokenMetadata): boolean {
   return token.nativeOnly && token.nativeNetwork === network
 }
 
-// /**
-//  * Retrieves network config data given a chain ID
-//  * 
-//  * @param chainID The chainID used by Metamask
-//  * @returns The network metadata
-//  */
-// export function getNetworkByChainID(chainID: number): NetworkMetadata | undefined {
-//   for (const network in networks) {
-//     if (networks[network].chainID === chainID) {
-//       return networks[network]
-//     }
-//   }
-// }
+/**
+ * Retrieves network config data given a chain ID
+ * 
+ * @param chainID The chainID used by Metamask
+ * @returns The network name
+ */
+export function getNetworkByChainID(chainID: number): NetworkName {
+  const domain = chainIdToDomainMapping.get(chainID);
+  if (!domain)
+    throw new Error(
+      `Cannot find corresponding Nomad domain for chainId ${chainID}`,
+    );
+
+  return domain;
+}
 
 // /**
 //  * Retrieves network config data given the Nomad domain ID
@@ -93,101 +103,101 @@ export function isNativeToken(network: string, token: TokenMetadata): boolean {
 
 // /******** SDK ********/
 
-// /**
-//  * Retrieves Nomad balances for a specific token across all networks
-//  * 
-//  * key = Nomad domain
-//  * value = token balance
-//  * 
-//  * @param tokenName The token name
-//  * @param address The user's wallet address
-//  * @returns Balance by network
-//  */
-// export async function getNomadBalances(
-//   tokenName: TokenName,
-//   address: string
-// ): Promise<Record<number, string> | undefined> {
-//   const { tokenIdentifier, decimals, symbol } = tokens[tokenName]
+/**
+ * Retrieves Nomad balances for a specific token across all networks
+ * 
+ * key = Nomad domain
+ * value = token balance
+ * 
+ * @param tokenName The token name
+ * @param address The user's wallet address
+ * @returns Balance by network
+ */
+export async function getNomadBalances(
+  tokenName: TokenName,
+  address: string
+): Promise<Record<number, string> | undefined> {
+  const { tokenIdentifier, decimals, symbol } = tokens[tokenName]
 
-//   // get representations of token
-//   const representations = await nomad.resolveRepresentations(tokenIdentifier)
-//   const balances: Record<number, string> = {}
-//   let domain, instance
+  // get representations of token
+  const representations = await nomad.resolveRepresentations(tokenIdentifier)
+  const balances: Record<number, string> = {}
+  let domain, instance
 
-//   for ([domain, instance] of representations.tokens.entries()) {
-//     const balanceBN = await instance.balanceOf(address)
-//     balances[domain] = utils.formatUnits(balanceBN.toString(), decimals)
-//   }
-//   return balances
-// }
+  for ([domain, instance] of representations.tokens.entries()) {
+    const balanceBN = await instance.balanceOf(address)
+    balances[domain] = utils.formatUnits(balanceBN.toString(), decimals)
+  }
+  return balances
+}
 
-// /**
-//  * Retrieves balance for a Nomad asset on `domain` chain
-//  * 
-//  * @param token The token identifier consisting of a domain (network) and id (native token address)
-//  * @param address The user's wallet address
-//  * @param domain The Nomad domain ID
-//  * @returns Balance on specified chain
-//  */
-// export async function getNomadBalance(
-//   token: TokenIdentifier,
-//   address: string,
-//   domain: number
-// ): Promise<BigNumber | undefined> {
-//   let key, instance, balance
-//   const representations = await nomad.resolveRepresentations(token)
-//   const tokenEntries = representations.tokens.entries()
+/**
+ * Retrieves balance for a Nomad asset on `domain` chain
+ * 
+ * @param token The token identifier consisting of a domain (network) and id (native token address)
+ * @param address The user's wallet address
+ * @param domain The Nomad domain ID
+ * @returns Balance on specified chain
+ */
+export async function getNomadBalance(
+  token: TokenIdentifier,
+  address: string,
+  domain: number
+): Promise<BigNumber | undefined> {
+  let key, instance, balance
+  const representations = await nomad.resolveRepresentations(token)
+  const tokenEntries = representations.tokens.entries()
 
-//   for ([key, instance] of tokenEntries) {
-//     if (domain === key) {
-//       balance = await instance.balanceOf(address)
-//       return balance
-//     }
-//   }
-// }
+  for ([key, instance] of tokenEntries) {
+    if (domain === key) {
+      balance = await instance.balanceOf(address)
+      return balance
+    }
+  }
+}
 
-// /**
-//  * Retrieves balance for token on specified network
-//  * 
-//  * @param networkName The network name
-//  * @param tokenName The token name
-//  * @param address The user's wallet address
-//  * @returns Balance by network
-//  */
-// export async function getBalanceFromWallet(networkName: NetworkName, tokenName: TokenName, address: string) {
-//   console.log('gettingbalanceFromwallet')
+/**
+ * Retrieves balance for token on specified network
+ * 
+ * @param networkName The network name
+ * @param tokenName The token name
+ * @param address The user's wallet address
+ * @returns Balance by network
+ */
+export async function getBalanceFromWallet(networkName: NetworkName, tokenName: TokenName, address: string) {
+  console.log('gettingbalanceFromwallet')
 
-//   const network = networks[networkName]
-//   const domain = network.domainID
-//   const token = tokens[tokenName]
+  const network = nomadConfig.bridgeGui[networkName]
+  const { domain } = nomadConfig.protocol.networks[networkName]
+  const token = tokens[tokenName]
 
-//   let balance
-//   // native assets
-//   if (token.tokenIdentifier.domain === networkName) {
-//     const provider = nomad.getProvider(networkName)!
-//     if (network.nativeToken === token) {
-//       // get balance of primary native asset
-//       console.log('getting native token balance')
-//       balance = provider?.getBalance(address)
-//     } else {
-//       // get balance of ERC20 token
-//       console.log('getting balance of ERC20 token: ', tokenName)
-//       const tokenAddress = token.tokenIdentifier.id
-//       const tokenContract = ERC20__factory.connect(tokenAddress as string, provider)
-//       balance = await tokenContract.balanceOf(address)
-//     }
-//   } else {
-//     // get balance of Nomad representational assets
-//     console.log('getting representational token balance')
-//     balance = await getNomadBalance(
-//       token.tokenIdentifier,
-//       address,
-//       domain
-//     )
-//   }
+  let balance
+  // native assets
+  if (token.tokenIdentifier.domain === networkName) {
+    const provider = nomad.getProvider(networkName)!
+    if (network.nativeTokenSymbol === token.symbol) {
+      // get balance of primary native asset
+      console.log('getting native token balance')
+      balance = provider?.getBalance(address)
+    } else {
+      // get balance of ERC20 token
+      console.log('getting balance of ERC20 token: ', tokenName)
+      const tokenAddress = token.tokenIdentifier.id
+      const tokenContract = ERC20__factory.connect(tokenAddress as string, provider)
+      balance = await tokenContract.balanceOf(address)
+    }
+  } else {
+    // get balance of Nomad representational assets
+    console.log('getting representational token balance')
+    balance = await getNomadBalance(
+      token.tokenIdentifier,
+      address,
+      domain
+    )
+  }
 
-//   return balance
-// }
+  return balance
+}
 
 // /**
 //  * Registers new signer in SDK, useful when switching chains

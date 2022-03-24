@@ -9,6 +9,43 @@ import * as config from '@nomad-xyz/configuration'
 const isProduction = process.env.production === 'production'
 const env = isProduction ? 'production' : 'development'
 export const nomadConfig = config.getBuiltin(env)
+nomadConfig.bridgeGui = {
+  // MAINNET:
+  // 'ethereum': {
+  //   displayName: 'Ethereum',
+  //   nativeTokenSymbol: 'ETH',
+  // },
+  // 'moonbeam': {
+  //   displayName: 'Moonbeam',
+  //   nativeTokenSymbol: 'GLMR'
+  // },
+  // 'milkomedaC1': {
+  //   displayName: 'Milkomeda C1',
+  //   nativeTokenSymbol: 'milkADA',
+  // },
+
+  // TESTNET:
+  'rinkeby': {
+    displayName: 'Rinkeby',
+    nativeTokenSymbol: 'ETH',
+  },
+  'kovan': {
+    displayName: 'Kovan',
+    nativeTokenSymbol: 'kETH',
+  },
+  'moonbasealpha': {
+    displayName: 'Moonbase Alpha',
+    nativeTokenSymbol: 'DEV',
+  },
+  'milkomedatestnet': {
+    displayName: 'Milkomeda Testnet',
+    nativeTokenSymbol: 'milkADA'
+  },
+  'evmostestnet': {
+    displayName: 'Evmos Testnet',
+    nativeTokenSymbol: 'tEVMOS',
+  }
+}
 
 /******** MISC CONFIG ********/
 // used to retrieve message proofs for processing tx on receiving chain
@@ -27,6 +64,21 @@ export type TokenMetadata = {
   tokenIdentifier: TokenIdentifier // { domain: networkName, id: tokenAddress(on native chain) }
   nativeOnly: boolean // only exists on native network. e.g. 'ETH' can only be on Ethereum. It is wrapped (WETH) on other networks
 }
+
+// chainID to domain mapping
+export const chainIdToDomainMapping: Map<number, NetworkName> = new Map([
+  // MAINNET:
+  // [1, 'ethereum'],
+  // [1284, 'moonbeam'],
+  // [2001, 'milkomedaC1'],
+
+  // TESTNET
+  [4, 'rinkeby'],
+  [42, 'kovan'],
+  [1287, 'moonbasealpha'],
+  [200101, 'milkomedatestnet'],
+  [9000, 'evmostestnet']
+]);
 
 /******** TOKEN IDENTIFIERS ********/
 const WETH: TokenIdentifier = {

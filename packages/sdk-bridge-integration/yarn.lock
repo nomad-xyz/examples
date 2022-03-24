@@ -1336,36 +1336,6 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.0"
 
-"@gnosis.pm/safe-core-sdk-types@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-types/-/safe-core-sdk-types-0.1.1.tgz#908c394cb4660493b4e9c8e01b5a7aa36efafd30"
-  integrity sha512-PghXGDaI5Foq37nZGmI90U2OKMeGtxh5KqkDqou9aFHwGVa/nf9HRQPxG9/XUzcyfe9OlKttDlJnR3XnC3dSDw==
-
-"@gnosis.pm/safe-core-sdk@^1.0.0", "@gnosis.pm/safe-core-sdk@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk/-/safe-core-sdk-1.3.0.tgz#ba21c6163c6a06e3fc51f5c7dac650e46fe8a779"
-  integrity sha512-laKkyJUv0llPPG5ep2+18v/anIEGi+KjarNoeVAutYzIeAAkSvvVbY8qyfczh5bWQkqvQ3K1l/QLUJ8Kx4hm3g==
-  dependencies:
-    "@gnosis.pm/safe-core-sdk-types" "^0.1.1"
-    "@gnosis.pm/safe-deployments" "^1.7.0"
-    ethereumjs-util "^7.1.3"
-    semver "^7.3.5"
-
-"@gnosis.pm/safe-deployments@^1.0.0", "@gnosis.pm/safe-deployments@^1.7.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.11.0.tgz#ab1cd1fe042e6fc4e06d845b21eef32b1b87b3cb"
-  integrity sha512-N5rpUGVTFXNxliFXFCOVbnawp6jUeQJPuZYRBlwmDXVzj0/C2Tp2NFa+pbDDsrNFm1bUneemRfaTzRLp96iP+w==
-
-"@gnosis.pm/safe-ethers-adapters@0.1.0-alpha.7":
-  version "0.1.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-ethers-adapters/-/safe-ethers-adapters-0.1.0-alpha.7.tgz#c1ff5dafd064b6e10e46279b15fe497dc542af17"
-  integrity sha512-NtxP71cplKB7AvILF4siC/eICcIc+qCzxzrQe8lqL7mwrnWgJ8VxLcVRO6944A+mLT7xG/fPpupF9rcuNyphkw==
-  dependencies:
-    "@gnosis.pm/safe-core-sdk" "^1.0.0"
-    "@gnosis.pm/safe-core-sdk-types" "^0.1.1"
-    "@gnosis.pm/safe-deployments" "^1.0.0"
-    axios "^0.21.1"
-
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -1476,7 +1446,7 @@
   resolved "https://registry.yarnpkg.com/@nomad-xyz/configuration/-/configuration-0.1.0-rc.5.tgz#d98cd74bbef734e0dc4e73452a18039dd50622dd"
   integrity sha512-tzFlAAxr9Uova+oW87YLehlBr3VWu1bsrodsLG1QAJssz80rVUyL/d7R6/wV4l6sgiiu8aa6WQo05Gw0owS/Fw==
 
-"@nomad-xyz/contract-interfaces@1.2.0", "@nomad-xyz/contract-interfaces@^1.1.1":
+"@nomad-xyz/contract-interfaces@^1.1.1":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@nomad-xyz/contract-interfaces/-/contract-interfaces-1.2.0.tgz#d024e4635527c8006a31f6c80e36304544543842"
   integrity sha512-Hx5961SWgn6FODeX3BGX4rf5WOJj0xw9a2driFjspgIGfLE96daXqDBnzroUe/BR4ROA82NNdm1Kbw/hKfL9PQ==
@@ -1485,12 +1455,33 @@
     "@types/node" "^16.10.2"
     typescript "^4.4.3"
 
+"@nomad-xyz/contracts-bridge@^1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@nomad-xyz/contracts-bridge/-/contracts-bridge-1.0.0-rc.2.tgz#11d7bc4e00a8abecbf0723240d1c5f485cb7cfac"
+  integrity sha512-/J7QmvreFx37PV0YESVPVcrH5T5CMp3mmKwsYIEJbwtT8802tP+VgKOk5e+kO2mqEiBWE3U0kMpp8ukR7UJDDQ==
+  dependencies:
+    "@nomad-xyz/contracts-core" "^1.0.0-rc.2"
+    "@nomad-xyz/contracts-router" "^1.0.0-rc.2"
+    "@openzeppelin/contracts" "~3.4.2"
+    "@openzeppelin/contracts-upgradeable" "~3.4.2"
+    "@summa-tx/memview-sol" "^2.0.0"
+
 "@nomad-xyz/contracts-core@^1.0.0-rc.2":
   version "1.0.0-rc.2"
   resolved "https://registry.yarnpkg.com/@nomad-xyz/contracts-core/-/contracts-core-1.0.0-rc.2.tgz#8787660a634f5b7942f6ce61c260385149b424e8"
   integrity sha512-/HldKMdMqaURft9dphoit5MF1Cw++lYex5BUr0uv3C0eerp9+NcieDqfveClg6MvEVc31mWlzEFdLG1cOb9ofQ==
   dependencies:
     "@openzeppelin/contracts" "^3.4.2"
+    "@openzeppelin/contracts-upgradeable" "~3.4.2"
+    "@summa-tx/memview-sol" "^2.0.0"
+
+"@nomad-xyz/contracts-router@^1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@nomad-xyz/contracts-router/-/contracts-router-1.0.0-rc.2.tgz#391e6a78e8be53dcc225be105e0a2f2877348119"
+  integrity sha512-ueCEY7Cmqu3hRP3Rf55aOrbPY3dH4H6xx7Ulgh62oXJa2cpiY+pTaE39D4PePRQSXg6QDAokHjVRSjT39cFsEw==
+  dependencies:
+    "@nomad-xyz/contracts-core" "^1.0.0-rc.2"
+    "@openzeppelin/contracts" "~3.4.2"
     "@openzeppelin/contracts-upgradeable" "~3.4.2"
     "@summa-tx/memview-sol" "^2.0.0"
 
@@ -1512,17 +1503,6 @@
     ethers "^5.4.6"
     web3 "^1.6.1"
 
-"@nomad-xyz/sdk@^1.3.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk/-/sdk-1.5.1.tgz#f9d187cbe5ceb8369289bfa5402b9722ec3e119a"
-  integrity sha512-Djqjo7xY3Lc6D9KABWbK7JP8kLS1YfleG8XuP5WRkBlFKXwEj0evxGespfclWNK49sE0HONrfqilGKCe5tiCHA==
-  dependencies:
-    "@gnosis.pm/safe-core-sdk" "^1.3.0"
-    "@gnosis.pm/safe-ethers-adapters" "0.1.0-alpha.7"
-    "@nomad-xyz/contract-interfaces" "1.2.0"
-    ethers "^5.4.6"
-    web3 "^1.6.1"
-
 "@nomad-xyz/sdk@^2.0.0-rc.2":
   version "2.0.0-rc.2"
   resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk/-/sdk-2.0.0-rc.2.tgz#e404a0bd51d258b7f4ff7dda808c1886020c9b57"
@@ -1538,7 +1518,7 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-3.4.2.tgz#2c2a1b0fa748235a1f495b6489349776365c51b3"
   integrity sha512-mDlBS17ymb2wpaLcrqRYdnBAmP1EwqhOXMvqWk2c5Q1N1pm5TkiCtXM9Xzznh4bYsQBq0aIWEkFFE2+iLSN1Tw==
 
-"@openzeppelin/contracts@^3.4.2":
+"@openzeppelin/contracts@^3.4.2", "@openzeppelin/contracts@~3.4.2":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.2.tgz#d81f786fda2871d1eb8a8c5a73e455753ba53527"
   integrity sha512-z0zMCjyhhp4y7XKAcDAi3Vgms4T2PstwBdahiO0+9NaGICQKjynK3wduSRplTgk4LXmoO1yfDGO5RbjKYxtuxA==
@@ -2721,13 +2701,6 @@ aws4@^1.8.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
-
-axios@^0.21.1:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
-  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
-  dependencies:
-    follow-redirects "^1.14.0"
 
 babel-code-frame@^6.22.0:
   version "6.26.0"
@@ -4803,7 +4776,7 @@ ethereum-cryptography@^0.1.3:
     secp256k1 "^4.0.1"
     setimmediate "^1.0.5"
 
-ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.3, ethereumjs-util@^7.1.4:
+ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.4:
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.1.4.tgz#a6885bcdd92045b06f596c7626c3e89ab3312458"
   integrity sha512-p6KmuPCX4mZIqsQzXfmSx9Y0l2hqf+VkAiwSisW3UKUFdk8ZkAt+AYaor83z2nSi6CU2zSsXMlD80hAbNEGM0A==
@@ -5245,7 +5218,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-follow-redirects@^1.0.0, follow-redirects@^1.14.0:
+follow-redirects@^1.0.0:
   version "1.14.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.9.tgz#dd4ea157de7bfaf9ea9b3fbd85aa16951f78d8d7"
   integrity sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==
