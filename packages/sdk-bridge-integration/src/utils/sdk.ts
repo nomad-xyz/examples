@@ -13,7 +13,6 @@ import {
   s3URL,
 } from '@/config'
 
-
 const { ethereum } = window as any
 const nomad = instantiateNomad()
 

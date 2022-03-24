@@ -22,7 +22,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { NButton, NTag } from 'naive-ui';
-import { connectWallet, truncateAddr, TXData } from '@/utils/sdk'
+import { connectWallet, truncateAddr, TXData } from './utils/sdk'
 import Bridge from './components/Bridge.vue';
 import Balances from './components/Balances.vue';
 import History from './components/History.vue';

@@ -11,11 +11,11 @@
       <!-- amount -->
       <div class="amount form-row">
         <n-form-item label="Amount" path="sendData.amount" class="amount__item">
-          <n-input v-model:value="formValue.sendData.amount" placeholder="Enter amount" />
+          <n-input v-model="formValue.sendData.amount" placeholder="Enter amount" />
         </n-form-item>
         <n-form-item label="Token" path="sendData.token" class="amount__item">
           <n-select
-            v-model:value="formValue.sendData.token"
+            v-model="formValue.sendData.token"
             :options="tokenOptions"
             placeholder="Select token"
           />
@@ -24,14 +24,14 @@
       <!-- origin/destination networks -->
       <n-form-item label="Origin Network" path="sendData.originNetwork" class="form-row">
         <n-select
-          v-model:value="formValue.sendData.originNetwork"
+          v-model="formValue.sendData.originNetwork"
           :options="networkOptions"
           placeholder="Select origin network"
         />
       </n-form-item>
       <n-form-item label="Destination Network" path="sendData.destinationNetwork" class="form-row">
         <n-select
-          v-model:value="formValue.sendData.destinationNetwork"
+          v-model="formValue.sendData.destinationNetwork"
           :options="networkOptions"
           placeholder="Select destination network"
         />
@@ -57,8 +57,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { NForm, NFormItem, NInput, NSelect, NButton, NCard } from 'naive-ui';
-import { tokens, networks, TokenName, NetworkName } from '@/config'
-import { switchNetwork, registerNewSigner, send, TXData } from '@/utils/sdk'
+import { tokens, nomadConfig, TokenName, NetworkName } from '../config'
+import { switchNetwork, registerNewSigner, send, TXData } from '../utils/sdk'
 
 function generateTokenOptions() {
   return Object.keys(tokens).map(t => {
@@ -68,7 +68,7 @@ function generateTokenOptions() {
 }
 
 function generateNetworkOptions() {
-  return Object.keys(networks).map(n => {
+  return nomadConfig.networks.map(n => {
     return { label: n, value: n }
   })
 }

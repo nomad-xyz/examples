@@ -21,7 +21,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { utils, BigNumber } from 'ethers'
-import { TransferMessage } from '@nomad-xyz/sdk/nomad/messages/BridgeMessage'
+import { TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { NButton } from 'naive-ui'
 import {
   getTxMessage,
@@ -29,8 +29,8 @@ import {
   fromBytes32,
   resolveRepresentation,
   getStatusText,
-  processTx
-} from '@/utils/sdk';
+  processTx,
+} from '../utils/sdk';
 
 export default defineComponent({
   name: 'Transaction Data',

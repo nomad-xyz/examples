@@ -10,7 +10,7 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
 import { NDataTable } from 'naive-ui';
-import { truncateAddr, TXData } from '@/utils/sdk';
+import { truncateAddr, TXData } from '../utils/sdk';
 import TxData from './TxData.vue'
 
 const createColumns = () => {
