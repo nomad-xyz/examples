@@ -1,6 +1,6 @@
 // import { NomadContext, dev } from '@nomad-xyz/sdk'
 import { BridgeContext } from '@nomad-xyz/sdk-bridge'
-import { utils, BigNumber } from 'ethers'
+import { utils, BigNumber, providers, BytesLike } from 'ethers'
 // import * as config from '@nomad-xyz/configuration'
 import {
   nomadConfig,
@@ -9,12 +9,14 @@ import {
   TokenName,
   TokenMetadata,
   TokenIdentifier,
-  chainIdToDomainMapping
+  chainIdToDomainMapping,
+  s3URL,
 } from '@/config'
 // import { TokenIdentifier } from '@nomad-xyz/sdk/nomad'
 // import { Web3Provider } from '@ethersproject/providers'
 // import { BigNumber, providers, utils, BytesLike } from 'ethers'
 // import { TransferMessage } from '@nomad-xyz/sdk/nomad/messages/BridgeMessage'
+import { TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 
 // import {
@@ -52,11 +54,11 @@ function instantiateNomad(): BridgeContext {
 //   ethersOverrides: object
 // }
 
-// export type TXData = {
-//   origin: NetworkName
-//   destination: NetworkName
-//   hash: string
-// }
+export type TXData = {
+  origin: NetworkName
+  destination: NetworkName
+  hash: string
+}
 
 /******** CONFIGS ********/
 
@@ -88,18 +90,21 @@ export function getNetworkByChainID(chainID: number): NetworkName {
   return domain;
 }
 
-// /**
-//  * Retrieves network config data given the Nomad domain ID
-//  * 
-//  * @param domainID The domainID used by Nomad
-//  * @returns The network metadata
-//  */
-// export function getNetworkByDomainID(domainID: number): NetworkMetadata {
-//   const name = Object.keys(networks).find(n => {
-//     return networks[n].domainID === domainID
-//   })
-//   return networks[name!]
-// }
+/**
+ * Retrieves network config data given the Nomad domain ID
+ * 
+ * @param domainID The domainID used by Nomad
+ * @returns The network metadata
+ */
+export function getNetworkByDomainID(domainID: number): NetworkName {
+  const { networks } = nomadConfig.protocol
+  const name = Object.keys(networks).find(n => {
+    return networks[n].domain === domainID
+  })
+  if (!name)
+    throw new Error(`Cannot find network with domain: ${domainID}`)
+  return name
+}
 
 // /******** SDK ********/
 
@@ -199,171 +204,173 @@ export async function getBalanceFromWallet(networkName: NetworkName, tokenName: 
   return balance
 }
 
-// /**
-//  * Registers new signer in SDK, useful when switching chains
-//  * 
-//  * @dev note that old signers must be cleared
-//  * 
-//  * @param networkName The network name
-//  */
-// export function registerNewSigner(networkName: NetworkName) {
-//   console.log('registering signer for ', networkName)
-//   // get current provider and signer
-//   const provider = new providers.Web3Provider(ethereum)
-//   const newSigner = provider.getSigner()
+/**
+ * Registers new signer in SDK, useful when switching chains
+ * 
+ * @dev note that old signers must be cleared
+ * 
+ * @param networkName The network name
+ */
+export function registerNewSigner(networkName: NetworkName) {
+  console.log('registering signer for ', networkName)
+  // get current provider and signer
+  const provider = new providers.Web3Provider(ethereum)
+  const newSigner = provider.getSigner()
 
-//   // clear current signers and re-register
-//   nomad.clearSigners()
-//   const missingProviders = nomad.missingProviders
-//   missingProviders.forEach((domain: number) => {
-//     const network = getNetworkByDomainID(domain)
-//     nomad.registerRpcProvider(networkName, network.rpcUrl)
-//   })
+  // clear current signers and re-register
+  nomad.clearSigners()
+  const missingProviders = nomad.missingProviders
+  missingProviders.forEach((domain: NetworkName) => {
+    const rpcUrl = nomadConfig.rpcs[domain][0]
+    nomad.registerRpcProvider(networkName, rpcUrl)
+  })
 
-//   nomad.registerSigner(networkName, newSigner)
-// }
+  nomad.registerSigner(networkName, newSigner)
+}
 
-// /**
-//  * Dispatches bridge transaction
-//  * 
-//  * @param originNetworkName The name of the origin network
-//  * @param destinationNetworkName The name of the destination network
-//  * @param amount The sending amount as a number, will be formatted when passed to SDK
-//  * @param tokenName The sending token name
-//  * @param destinationAddr The destination address, defaults to the user's wallet address
-//  * @returns TransferMessage
-//  */
-// export async function send(
-//   originNetworkName: NetworkName,
-//   destinationNetworkName: NetworkName,
-//   amount: number,
-//   tokenName: TokenName,
-//   destinationAddr: string
-// ): Promise<TransferMessage> {
-//   const token = tokens[tokenName]
-//   const isNative = isNativeToken(originNetworkName, token)
+/**
+ * Dispatches bridge transaction
+ * 
+ * @param originNetworkName The name of the origin network
+ * @param destinationNetworkName The name of the destination network
+ * @param amount The sending amount as a number, will be formatted when passed to SDK
+ * @param tokenName The sending token name
+ * @param destinationAddr The destination address, defaults to the user's wallet address
+ * @returns TransferMessage
+ */
+export async function send(
+  originNetworkName: NetworkName,
+  destinationNetworkName: NetworkName,
+  amount: number,
+  tokenName: TokenName,
+  destinationAddr: string
+): Promise<TransferMessage> {
+  const token = tokens[tokenName]
+  const isNative = isNativeToken(originNetworkName, token)
 
-//   // get Nomad domain
-//   const originDomain = networks[originNetworkName].domainID
-//   const destDomain = networks[destinationNetworkName].domainID
-//   // 
+  // get Nomad domain
+  const { networks } = nomadConfig.protocol
+  const originDomain = networks[originNetworkName].domain
+  const destDomain = networks[destinationNetworkName].domain
+  // 
 
-//   // format amount according to token decimals
-//   const amnt = utils.parseUnits(amount.toString(), token.decimals)
+  // format amount according to token decimals
+  const amnt = utils.parseUnits(amount.toString(), token.decimals)
 
-//   let transferMessage: TransferMessage
-//   // if ETH Helper contract exists, native token must be wrapped
-//   // before sending, use sendNative
-//   const ethHelper = nomad.getBridge(originDomain)?.ethHelper
-//   if (ethHelper && isNative) {
-//     console.log('send native')
-//     transferMessage = await nomad.sendNative(
-//       originDomain,
-//       destDomain,
-//       amnt,
-//       destinationAddr
-//     )
-//   } else {
-//     console.log('send ERC-20')
-//     transferMessage = await nomad.send(
-//       originDomain,
-//       destDomain,
-//       token.tokenIdentifier,
-//       amnt,
-//       destinationAddr,
-//     )
-//   }
-//   console.log('tx sent!!!', transferMessage)
-//   return transferMessage
-// }
+  let transferMessage: TransferMessage
+  // if ETH Helper contract exists, native token must be wrapped
+  // before sending, use sendNative
+  const ethHelper = nomad.getBridge(originDomain)?.ethHelper
+  if (ethHelper && isNative) {
+    console.log('send native')
+    transferMessage = await nomad.sendNative(
+      originDomain,
+      destDomain,
+      amnt,
+      destinationAddr
+    )
+  } else {
+    console.log('send ERC-20')
+    transferMessage = await nomad.send(
+      originDomain,
+      destDomain,
+      token.tokenIdentifier,
+      amnt,
+      destinationAddr,
+    )
+  }
+  console.log('tx sent!!!', transferMessage)
+  return transferMessage
+}
 
-// /**
-//  * Fetches the TransferMessage object
-//  * 
-//  * @dev can be used to retrieve data about a transfer, including status
-//  * 
-//  * @param tx The transaction data, origin network and transaction hash
-//  */
-// export async function getTxMessage(tx: TXData): Promise<TransferMessage> {
-//   const { origin, hash } = tx
-//   return await TransferMessage.singleFromTransactionHash(
-//     nomad,
-//     origin,
-//     hash
-//   )
-// }
+/**
+ * Fetches the TransferMessage object
+ * 
+ * @dev can be used to retrieve data about a transfer, including status
+ * 
+ * @param tx The transaction data, origin network and transaction hash
+ */
+export async function getTxMessage(tx: TXData): Promise<TransferMessage> {
+  const { origin, hash } = tx
+  return await TransferMessage.singleFromTransactionHash(
+    nomad,
+    origin,
+    hash
+  )
+}
 
-// /**
-//  * Processes a transaction
-//  * 
-//  * @dev transactions to Moonbeam are subsidized on the receiving end. However, when going
-//  * to Ethereum, user must return to process and claim funds.
-//  * 
-//  * @param tx The transaction data, origin network and transaction hash
-//  */
-// export async function processTx (tx: TXData) {
-//   // get transfer message
-//   const { origin, hash } = tx
-//   const message = await TransferMessage.singleFromTransactionHash(nomad, origin, hash)
+/**
+ * Processes a transaction
+ * 
+ * @dev transactions to Moonbeam are subsidized on the receiving end. However, when going
+ * to Ethereum, user must return to process and claim funds.
+ * 
+ * @param tx The transaction data, origin network and transaction hash
+ */
+export async function processTx (tx: TXData) {
+  // get transfer message
+  const { origin, hash } = tx
+  const message = await TransferMessage.singleFromTransactionHash(nomad, origin, hash)
 
-//   // switch to destination network and register signer
-//   const destNetwork = getNetworkByDomainID(message.destination)
-//   await switchNetwork(destNetwork.name)
-//   await registerNewSigner(destNetwork.name)
+  // switch to destination network and register signer
+  const destNetwork = nomad.resolveDomainName(message.destination)
+  await switchNetwork(destNetwork)
+  await registerNewSigner(destNetwork)
 
-//   // get proof
-//   const res = await fetch(`${s3URL}${origin}_${message.leafIndex.toString()}`)
-//   const data = (await res.json()) as any
-//   console.log('proof: ', data)
+  // get proof
+  const res = await fetch(`${s3URL}${origin}_${message.leafIndex.toString()}`)
+  const data = (await res.json()) as any
+  console.log('proof: ', data)
 
-//   // get replica contract
-//   const core = nomad.getCore(message.destination)
-//   const replica = core?.getReplica(message.origin)
+  // get replica contract
+  const core = nomad.getCore(message.destination)
+  // TODO: update getReplica to support name or number
+  const replica = core?.getReplica(nomad.resolveDomainName(message.origin))
 
-//   // connect signer
-//   const signer = nomad.getSigner(message.origin)
-//   replica!.connect(signer!)
+  // connect signer
+  const signer = nomad.getSigner(message.origin)
+  replica!.connect(signer!)
 
-//   // prove and process
-//   try {
-//     const receipt = await replica!.proveAndProcess(data.message as BytesLike, data.proof.path, data.proof.index)
-//     console.log('PROCESSED!!!!')
-//     return receipt
-//   } catch(e) {
-//     console.log(e)
-//   }
-// }
+  // prove and process
+  try {
+    const receipt = await replica!.proveAndProcess(data.message as BytesLike, data.proof.path, data.proof.index)
+    console.log('PROCESSED!!!!')
+    return receipt
+  } catch(e) {
+    console.log(e)
+  }
+}
 
-// /**
-//  * Retrieves token representation address on specified network
-//  * 
-//  * @dev note that old signers must be cleared
-//  * 
-//  * @param network The network name or Nomad domain ID
-//  * @param tokenIdentifier The domain and native token address
-//  */
-// export async function resolveRepresentation(network: NetworkName | number, tokenIdentifier: TokenIdentifier) {
-//   return await nomad.resolveRepresentation(network, tokenIdentifier)
-// }
+/**
+ * Retrieves token representation address on specified network
+ * 
+ * @dev note that old signers must be cleared
+ * 
+ * @param network The network name or Nomad domain ID
+ * @param tokenIdentifier The domain and native token address
+ */
+export async function resolveRepresentation(network: NetworkName | number, tokenIdentifier: TokenIdentifier) {
+  return await nomad.resolveRepresentation(network, tokenIdentifier)
+}
 
-// /******** WALLET ********/
+/******** WALLET ********/
 
-// /**
-//  * Connect wallet
-//  */
-// export async function connectWallet() {
-//   // if window.ethereum does not exist, do not connect
-//   if (!ethereum) return
+/**
+ * Connect wallet
+ */
+export async function connectWallet() {
+  // if window.ethereum does not exist, do not connect
+  if (!ethereum) return
 
-//   await ethereum.request({ method: 'eth_requestAccounts' })
+  await ethereum.request({ method: 'eth_requestAccounts' })
 
-//   // get provider/signer
-//   const provider = await getMetamaskProvider()
-//   const signer = await provider.getSigner()
+  // get provider/signer
+  const provider = await getMetamaskProvider()
+  const signer = await provider.getSigner()
 
-//   // return address
-//   return await signer.getAddress()
-// }
+  // return address
+  return await signer.getAddress()
+}
 
 // /**
 //  * Switch networks in wallet
@@ -408,72 +415,72 @@ export async function getBalanceFromWallet(networkName: NetworkName, tokenName: 
 //   return network.name
 // }
 
-// /**
-//  * Returns the active network from user's wallet
-//  * 
-//  * @returns The network metadata
-//  */
-// export async function getMetamaskNetwork() {
-//   const provider = await getMetamaskProvider()
-//   const { chainId } = await provider.ready
-//   return getNetworkByChainID(chainId)!.name
-// }
+/**
+ * Returns the active network from user's wallet
+ * 
+ * @returns The network metadata
+ */
+export async function getMetamaskNetwork() {
+  const provider = await getMetamaskProvider()
+  const { chainId } = await provider.ready
+  return getNetworkByChainID(chainId)!
+}
 
-// export async function getMetamaskProvider(): Promise<Web3Provider> {
-//   const provider = new Web3Provider(ethereum)
-//   await provider.ready
-//   return Promise.resolve(provider)
-// }
+export async function getMetamaskProvider(): Promise<providers.Web3Provider> {
+  const provider = new providers.Web3Provider(ethereum)
+  await provider.ready
+  return Promise.resolve(provider)
+}
 
-// /******** UI ********/
+/******** UI ********/
 
-// /**
-//  * Shortens address for UI display
-//  * 0x0000...0000
-//  * 
-//  * @param addr The full address or transaction hash
-//  * @returns The shortened address
-//  */
-// export function truncateAddr(addr: string): string {
-//   if (!addr) return ''
-//   const first = addr.slice(0, 6)
-//   const len = addr.length
-//   const last = addr.slice(len - 4, len)
-//   return `${first}...${last}`
-// }
+/**
+ * Shortens address for UI display
+ * 0x0000...0000
+ * 
+ * @param addr The full address or transaction hash
+ * @returns The shortened address
+ */
+export function truncateAddr(addr: string): string {
+  if (!addr) return ''
+  const first = addr.slice(0, 6)
+  const len = addr.length
+  const last = addr.slice(len - 4, len)
+  return `${first}...${last}`
+}
 
-// /**
-//  * Registers new signer in SDK, useful when switching chains
-//  * 
-//  * @dev Nomad uses 32 byte addresses, they are prefixed with 12 empty bytes
-//  * 
-//  * @param addr The 32 byte address
-//  * @returns The 20 byte address
-//  */
-// export function fromBytes32(addr: string): string {
-//   if (addr.length !== 66) return addr
-//   // trim 12 bytes from beginning plus '0x'
-//   const short = addr.slice(26)
-//   return `0x${short}`
-// }
+/**
+ * Registers new signer in SDK, useful when switching chains
+ * 
+ * @dev Nomad uses 32 byte addresses, they are prefixed with 12 empty bytes
+ * 
+ * @param addr The 32 byte address
+ * @returns The 20 byte address
+ */
+export function fromBytes32(addr: string): string {
+  if (addr.length !== 66) return addr
+  // trim 12 bytes from beginning plus '0x'
+  const short = addr.slice(26)
+  return `0x${short}`
+}
 
-// /**
-//  * Return a human-readable status
-//  * 
-//  * @param status The status as a number
-//  */
-// export function getStatusText(status: number): string {
-//   switch (status) {
-//     case 0:
-//       return 'Dispatched'
-//     case 1:
-//       return 'Included'
-//     case 2:
-//       return 'Relayed'
-//     case 3:
-//       return 'Processed'
+/**
+ * Return a human-readable status
+ * 
+ * @param status The status as a number
+ */
+export function getStatusText(status: number): string {
+  switch (status) {
+    case 0:
+      return 'Dispatched'
+    case 1:
+      return 'Included'
+    case 2:
+      return 'Relayed'
+    case 3:
+      return 'Processed'
 
-//     default:
-//       return 'Dispatched'
-//   }
-// }
+    default:
+      return 'Dispatched'
+  }
+}
