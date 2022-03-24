@@ -1091,15 +1091,6 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/transactions" "^5.6.0"
 
-"@ethersproject/experimental@^5.3.0":
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/@ethersproject/experimental/-/experimental-5.6.0.tgz#c72ef00a79b746c522eb79736712169d71c55f64"
-  integrity sha512-lSEM/6t+BicbeyRxat5meoQhXZLoBEziVrxZqeCIhsPntvq4DlMobPBKXF0Iz3m0dMvl9uga7fHEO4YD9SgCgw==
-  dependencies:
-    "@ethersproject/web" "^5.6.0"
-    ethers "^5.6.0"
-    scrypt-js "3.0.1"
-
 "@ethersproject/hash@5.6.0", "@ethersproject/hash@^5.0.4", "@ethersproject/hash@^5.6.0":
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/hash/-/hash-5.6.0.tgz#d24446a5263e02492f9808baa99b6e2b4c3429a2"
@@ -1436,24 +1427,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nomad-xyz/configuration@0.1.0-rc.3":
-  version "0.1.0-rc.3"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/configuration/-/configuration-0.1.0-rc.3.tgz#be528c05639ba3b7c4c9b3c9fdf1f673886a9387"
-  integrity sha512-iqiKL9kfXgTNsrA9OSh9k/dh2inA0emZ8T1oLpZtYm0NOkTm7watXGCbwlNAEdGy2BuuV+Hg7qmEHbaPrkvYWw==
-
-"@nomad-xyz/configuration@^0.1.0-rc.5":
-  version "0.1.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/configuration/-/configuration-0.1.0-rc.5.tgz#d98cd74bbef734e0dc4e73452a18039dd50622dd"
-  integrity sha512-tzFlAAxr9Uova+oW87YLehlBr3VWu1bsrodsLG1QAJssz80rVUyL/d7R6/wV4l6sgiiu8aa6WQo05Gw0owS/Fw==
-
-"@nomad-xyz/contract-interfaces@^1.1.1":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/contract-interfaces/-/contract-interfaces-1.2.0.tgz#d024e4635527c8006a31f6c80e36304544543842"
-  integrity sha512-Hx5961SWgn6FODeX3BGX4rf5WOJj0xw9a2driFjspgIGfLE96daXqDBnzroUe/BR4ROA82NNdm1Kbw/hKfL9PQ==
-  dependencies:
-    "@ethersproject/experimental" "^5.3.0"
-    "@types/node" "^16.10.2"
-    typescript "^4.4.3"
+"@nomad-xyz/configuration@0.1.0-rc.6", "@nomad-xyz/configuration@^0.1.0-rc.6":
+  version "0.1.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@nomad-xyz/configuration/-/configuration-0.1.0-rc.6.tgz#aba79e21613bf5a95aa5036ef1b6f4483ec237a0"
+  integrity sha512-a9yMvbMfKK8z5xsB7Q0mNm4NqImCdYFh4OyZaOU27nywYZmmoEiImUGDO74/uRAZ5DZyDedYOrA8HcQPlFc8ZA==
 
 "@nomad-xyz/contracts-bridge@^1.0.0-rc.2":
   version "1.0.0-rc.2"
@@ -1485,7 +1462,7 @@
     "@openzeppelin/contracts-upgradeable" "~3.4.2"
     "@summa-tx/memview-sol" "^2.0.0"
 
-"@nomad-xyz/multi-provider@^1.0.0-rc.2":
+"@nomad-xyz/multi-provider@^1.0.0-rc.3":
   version "1.0.0-rc.3"
   resolved "https://registry.yarnpkg.com/@nomad-xyz/multi-provider/-/multi-provider-1.0.0-rc.3.tgz#12d1f65a67233220be2d3e146d0fae579d0b3610"
   integrity sha512-Gj4QsLnjOUiiP47yjV9fKb3JJNIYJH2e0hbS/71JGHU++NP61hDXhTN9mCpPmXxE0ONNzv6rjIYOAfmCzyH46g==
@@ -1493,24 +1470,25 @@
     ethers "^5.4.6"
     web3 "^1.6.1"
 
-"@nomad-xyz/sdk-bridge@^1.0.0-rc.2":
-  version "1.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk-bridge/-/sdk-bridge-1.0.0-rc.2.tgz#dcdc520c58b8fca279e9147d04706c07cc9d5f93"
-  integrity sha512-01gII7OQTQCtzIwrkvcvR0wQ6DYt2te8BX6d+FBZFI3D8DrBxg0ndvXMu/dFevDLUHI3a1yAISNKTchc4rhnoA==
+"@nomad-xyz/sdk-bridge@^1.0.0-rc.3":
+  version "1.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk-bridge/-/sdk-bridge-1.0.0-rc.3.tgz#92e2fee7dcbcf46c7bec854f89b0720f1494e7f2"
+  integrity sha512-XK9ha+3OAGkVQJ2IHvFmD+Hl+QnjC2IsXUdzmGH3cxV3AZXbWD1YmyHB1Et9it2F9UVPJdz8lAR60gsdXu4caA==
   dependencies:
-    "@nomad-xyz/configuration" "0.1.0-rc.3"
-    "@nomad-xyz/sdk" "^2.0.0-rc.2"
+    "@nomad-xyz/configuration" "0.1.0-rc.6"
+    "@nomad-xyz/contracts-bridge" "^1.0.0-rc.2"
+    "@nomad-xyz/sdk" "^2.0.0-rc.3"
     ethers "^5.4.6"
     web3 "^1.6.1"
 
-"@nomad-xyz/sdk@^2.0.0-rc.2":
-  version "2.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk/-/sdk-2.0.0-rc.2.tgz#e404a0bd51d258b7f4ff7dda808c1886020c9b57"
-  integrity sha512-/knSfhUCZ0zVKfy7rUwTanPgs0OKjGp61au/xk+QUjhkJA5ijzfl2nN2QkNcTPv+0B2vJHsU8rv06YrjR0roWA==
+"@nomad-xyz/sdk@^2.0.0-rc.3":
+  version "2.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk/-/sdk-2.0.0-rc.3.tgz#01fa1107b106d8c0ecc097db9de480de3032f488"
+  integrity sha512-oNRBd2EJwfHrdgi9D66mr7ojdqC+d1QNX39XhDMYc4m/xVY8d7KabDsKw25BxLWzcirKFtUhaBBjzOY0yEivNQ==
   dependencies:
-    "@nomad-xyz/configuration" "0.1.0-rc.3"
+    "@nomad-xyz/configuration" "0.1.0-rc.6"
     "@nomad-xyz/contracts-core" "^1.0.0-rc.2"
-    "@nomad-xyz/multi-provider" "^1.0.0-rc.2"
+    "@nomad-xyz/multi-provider" "^1.0.0-rc.3"
     ethers "^5.4.6"
 
 "@openzeppelin/contracts-upgradeable@~3.4.2":
@@ -1675,11 +1653,6 @@
   version "12.20.47"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.47.tgz#ca9237d51f2a2557419688511dab1c8daf475188"
   integrity sha512-BzcaRsnFuznzOItW1WpQrDHM7plAa7GIDMZ6b5pnMbkqEtM/6WCOhvZar39oeMQP79gwvFUWjjptE7/KGcNqFg==
-
-"@types/node@^16.10.2":
-  version "16.11.26"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.26.tgz#63d204d136c9916fb4dcd1b50f9740fe86884e47"
-  integrity sha512-GZ7bu5A6+4DtG7q9GsoHXy3ALcgeIHP4NnL0Vv2wu0uUB/yQex26v0tf6/na1mm0+bS9Uw+0DFex7aaKr2qawQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -4787,7 +4760,7 @@ ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.4:
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethers@^5.4.6, ethers@^5.5.3, ethers@^5.6.0:
+ethers@^5.4.6, ethers@^5.5.3:
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.6.1.tgz#a56cd67f1595b745dc3dde0ccf2b5de53a41a6d0"
   integrity sha512-qtl/2W+dwmUa5Z3JqwsbV3JEBZZHNARe5K/A2ePcNAuhJYnEKIgGOT/O9ouPwBijSqVoQnmQMzi5D48LFNOY2A==
@@ -9962,11 +9935,6 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
-
-typescript@^4.4.3:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.2.tgz#fe12d2727b708f4eef40f51598b3398baa9611d4"
-  integrity sha512-HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==
 
 typescript@~4.1.5:
   version "4.1.6"

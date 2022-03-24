@@ -3,12 +3,13 @@ import USDTIcon from './assets/USDT.png'
 import DEVIcon from './assets/DEV.png'
 import wADAIcon from './assets/wADA.png'
 
-import * as config from '@nomad-xyz/configuration'
+import { getBuiltin} from '@nomad-xyz/configuration'
+import { BytesLike } from 'ethers'
 
 /******** NOMAD NETWORKS CONFIG ********/
 const isProduction = process.env.production === 'production'
 const env = isProduction ? 'production' : 'development'
-export const nomadConfig = config.getBuiltin(env)
+export const nomadConfig = getBuiltin(env)
 nomadConfig.bridgeGui = {
   // MAINNET:
   // 'ethereum': {
@@ -53,8 +54,8 @@ export const s3URL = isProduction ? 'https://nomadxyz-production-proofs.s3.us-we
 
 /******** TOKEN TYPES ********/
 export type TokenIdentifier = {
-  domain: NetworkName
-  id: string
+  domain: NetworkName | number
+  id: BytesLike
 }
 export type TokenMetadata = {
   nativeNetwork: NetworkName // e.g. 'ethereum' for 'WETH' or 'USDT'

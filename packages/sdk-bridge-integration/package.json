@@ -8,10 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@nomad-xyz/configuration": "^0.1.0-rc.5",
-    "@nomad-xyz/contract-interfaces": "^1.1.1",
+    "@nomad-xyz/configuration": "^0.1.0-rc.6",
     "@nomad-xyz/contracts-bridge": "^1.0.0-rc.2",
-    "@nomad-xyz/sdk-bridge": "^1.0.0-rc.2",
+    "@nomad-xyz/sdk-bridge": "^1.0.0-rc.3",
     "core-js": "^3.6.5",
     "ethers": "^5.5.3",
     "naive-ui": "^2.24.1",

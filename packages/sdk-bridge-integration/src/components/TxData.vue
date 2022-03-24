@@ -21,7 +21,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { utils, BigNumber } from 'ethers'
-import { TransferMessage } from '@nomad-xyz/sdk-bridge'
+import { TokenIdentifier, TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { NButton } from 'naive-ui'
 import {
   getTxMessage,
@@ -70,7 +70,7 @@ export default defineComponent({
       // get token
       const token = await resolveRepresentation(
         message.origin,
-        message.token
+        message.token as TokenIdentifier
       )
       // token symbol
       this.tokenSymbol = await token?.symbol()!
