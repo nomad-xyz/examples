@@ -1,7 +1,6 @@
-// import { NomadContext, dev } from '@nomad-xyz/sdk'
-import { BridgeContext } from '@nomad-xyz/sdk-bridge'
+import { BridgeContext, TransferMessage } from '@nomad-xyz/sdk-bridge'
+import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 import { utils, BigNumber, providers, BytesLike } from 'ethers'
-// import * as config from '@nomad-xyz/configuration'
 import {
   nomadConfig,
   tokens,
@@ -10,23 +9,10 @@ import {
   TokenMetadata,
   TokenIdentifier,
   chainIdToDomainMapping,
+  domainToChainIdMapping,
   s3URL,
 } from '@/config'
-// import { TokenIdentifier } from '@nomad-xyz/sdk/nomad'
-// import { Web3Provider } from '@ethersproject/providers'
-// import { BigNumber, providers, utils, BytesLike } from 'ethers'
-// import { TransferMessage } from '@nomad-xyz/sdk/nomad/messages/BridgeMessage'
-import { TransferMessage } from '@nomad-xyz/sdk-bridge'
-import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 
-// import {
-//   networks,
-//   tokens,
-//   NetworkName,
-//   TokenName,
-//   NetworkMetadata,
-//   TokenMetadata
-// } from '../config'
 
 const { ethereum } = window as any
 const nomad = instantiateNomad()
@@ -43,16 +29,16 @@ function instantiateNomad(): BridgeContext {
   return context
 }
 
-// /******** TYPES ********/
-// export interface SendData {
-//   isNative: boolean
-//   originNetwork: number
-//   destNetwork: number
-//   asset: TokenIdentifier
-//   amnt: number
-//   recipient: string
-//   ethersOverrides: object
-// }
+/******** TYPES ********/
+export interface SendData {
+  isNative: boolean
+  originNetwork: number
+  destNetwork: number
+  asset: TokenIdentifier
+  amnt: number
+  recipient: string
+  ethersOverrides: object
+}
 
 export type TXData = {
   origin: NetworkName
@@ -88,6 +74,22 @@ export function getNetworkByChainID(chainID: number): NetworkName {
     );
 
   return domain;
+}
+
+/**
+ * Retrieves network config data given a chain ID
+ * 
+ * @param chainID The chainID used by Metamask
+ * @returns The network name
+ */
+export function getChainIdByNetwork(network: NetworkName): number {
+  const chainId = domainToChainIdMapping.get(network);
+  if (!chainId)
+    throw new Error(
+      `Cannot find corresponding Nomad domain for domain ${network}`,
+    );
+
+  return chainId;
 }
 
 /**
@@ -372,48 +374,51 @@ export async function connectWallet() {
   return await signer.getAddress()
 }
 
-// /**
-//  * Switch networks in wallet
-//  * 
-//  * @param networkName The name of the network to switch to
-//  */
-// export async function switchNetwork(networkName: string) {
-//   console.log('set wallet network')
+/**
+ * Switch networks in wallet
+ * 
+ * @param networkName The name of the network to switch to
+ */
+export async function switchNetwork(networkName: NetworkName) {
+  console.log('set wallet network')
 
-//   if (!ethereum) return
+  if (!ethereum) return
 
-//   const network = networks[networkName]
-//   const hexChainId = '0x' + network.chainID.toString(16)
-//   try {
-//     await ethereum.request({
-//       method: 'wallet_switchEthereumChain',
-//       params: [{ chainId: hexChainId }],
-//     })
-//   } catch (switchError: any) {
-//     // This error code indicates that the chain has not been added to MetaMask.
-//     if (switchError.code === 4902) {
-//       await ethereum.request({
-//         method: 'wallet_addEthereumChain',
-//         params: [
-//           {
-//             chainId: hexChainId,
-//             rpcUrls: [network.rpcUrl],
-//             chainName: network.name,
-//             nativeCurrency: {
-//               name: network.nativeToken.symbol,
-//               symbol: network.nativeToken.symbol,
-//               decimals: network.nativeToken.decimals,
-//             },
-//           },
-//         ],
-//       })
-//     } 
+  const rpcUrls = nomadConfig.rpcs[networkName]
+  const { nativeTokenSymbol } = nomadConfig.bridgeGui[networkName]
+  const nativeTokenDecimals = tokens[nativeTokenSymbol].decimals
+  const chainId = getChainIdByNetwork(networkName);
+  const hexChainId = '0x' + chainId.toString(16)
+  try {
+    await ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: hexChainId }],
+    })
+  } catch (switchError: any) {
+    // This error code indicates that the chain has not been added to MetaMask.
+    if (switchError.code === 4902) {
+      await ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: hexChainId,
+            rpcUrls,
+            chainName: networkName,
+            nativeCurrency: {
+              name: nativeTokenSymbol,
+              symbol: nativeTokenSymbol,
+              decimals: nativeTokenDecimals,
+            },
+          },
+        ],
+      })
+    } 
 
-//     throw switchError
-//   }
+    throw switchError
+  }
 
-//   return network.name
-// }
+  return networkName
+}
 
 /**
  * Returns the active network from user's wallet

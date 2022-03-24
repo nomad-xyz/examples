@@ -80,6 +80,22 @@ export const chainIdToDomainMapping: Map<number, NetworkName> = new Map([
   [9000, 'evmostestnet']
 ]);
 
+// TODO: fix this? Maybe add chain ID to bridgeGui config
+// domain to chain ID mapping
+export const domainToChainIdMapping: Map<NetworkName, number> = new Map([
+  // MAINNET:
+  // ['ethereum', 1],
+  // ['moonbeam', 1284],
+  // ['milkomedaC1', 2001],
+
+  // TESTNET
+  ['rinkeby', 4],
+  ['kovan', 42],
+  ['moonbasealpha', 1287],
+  ['milkomedatestnet', 200101],
+  ['evmostestnet', 9000]
+]);
+
 /******** TOKEN IDENTIFIERS ********/
 const WETH: TokenIdentifier = {
   domain: 'kovan', // must be lowercase
