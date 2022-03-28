@@ -1,0 +1,40 @@
+{
+  "name": "nomad-sdk-quickstart",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT OR Apache-2.0",
+  "description": "A collection of scripts that demonstrate how to use the Nomad SDK.",
+  "scripts": {
+    "build": "tsc --build",
+    "check": "tsc --noEmit",
+    "lint": "eslint --fix ./src ./tests",
+    "lint:fix": "eslint --fix ./src ./tests",
+    "prettier": "prettier --write ./src ./tests"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "parserOptions": {
+      "parser": "@typescript-eslint/parser"
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "root": true
+  },
+  "dependencies": {
+    "@nomad-xyz/sdk": "^2.0.0-rc.4",
+    "@nomad-xyz/sdk-bridge": "^1.0.0-rc.4",
+    "ethers": "^5.5.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "ts-node": "^10.7.0",
+    "typescript": "~4.1.5"
+  }
+}
