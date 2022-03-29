@@ -1,10 +1,10 @@
 import { BridgeContext, TransferMessage } from "@nomad-xyz/sdk-bridge";
-import { getProd } from "./registerRpc";
+import { configureRpcs } from "../lib/registerRpc";
 
 async function main(){
     // This uses a helper function defined in ./registerRpcs.ts
     // to register RPCs placed in environment variables
-    const core = getProd() 
+    const core = configureRpcs("production") 
     
     // Which domains are registered? 
     console.log(`Registered Domains: ${core.domainNames}`)
@@ -21,7 +21,7 @@ async function main(){
     // Transaction Hash from the initial `Send` transaction dispatched by the end-user.
     const txHash = "0x353446ff1ca230f9e071989592d90cd8ba80609951020fd0787d89ce051b9818"
     // This message was sent on Ethereum
-    // https://etherscan.io/tx/0xe6b04d0e9c2f3593381849ca25b352c6f84a8bcb62dbc6834380ef39248cc5e1
+    // https://etherscan.io/tx/0x353446ff1ca230f9e071989592d90cd8ba80609951020fd0787d89ce051b9818
     const originDomain = "ethereum"
 
     // Fetch the transaction from the blockchain (makes RPC calls)
@@ -35,10 +35,14 @@ async function main(){
     // What Address is this message destined for?
     console.log(`Recipient: ${messageToInspect.recipient}`);
 
-    // // What was the token symbol of the token that was transferred in this message? 
-    // const tokenId = messageToInspect.token.id;
-    // const tokenDomain = messageToInspect.token.domain;
-    // // Resolve the canonical token 
+    // When does the fraud window for this message elapse? 
+    const confirmsAt =  (await messageToInspect.confirmAt()).toNumber() * 1000
+    console.log(`Fraud Proof Window Expiration: ${new Date(confirmsAt).toString()}`)
+
+    // What was the token symbol of the token that was transferred in this message? 
+    const tokenId = messageToInspect.token.id;
+    const tokenDomain = messageToInspect.token.domain;
+    // Resolve the canonical token 
     // const canonicalToken = await messageToInspect.assetAtOrigin()
     // console.log(`Token Symbol: ${canonicalToken.symbol()}`)
 }
