@@ -1,11 +1,14 @@
 import { BridgeContext, TransferMessage } from "@nomad-xyz/sdk-bridge";
 import { configureRpcs } from "../lib/registerRpc";
+import { BigNumber } from "@ethersproject/bignumber";
+import { ethers } from "ethers";
+
 
 async function main(){
     // This uses a helper function defined in ./registerRpcs.ts
     // to register RPCs placed in environment variables
     const core = configureRpcs("production") 
-    
+
     // Which domains are registered? 
     console.log(`Registered Domains: ${core.domainNames}`)
     
@@ -34,7 +37,7 @@ async function main(){
     console.log(`Sender: ${messageToInspect.sender}`);
     // What Address is this message destined for?
     console.log(`Recipient: ${messageToInspect.recipient}`);
-
+    
     // When does the fraud window for this message elapse? 
     const confirmsAt =  (await messageToInspect.confirmAt()).toNumber() * 1000
     console.log(`Fraud Proof Window Expiration: ${new Date(confirmsAt).toString()}`)
@@ -43,8 +46,18 @@ async function main(){
     const tokenId = messageToInspect.token.id;
     const tokenDomain = messageToInspect.token.domain;
     // Resolve the canonical token 
-    // const canonicalToken = await messageToInspect.assetAtOrigin()
-    // console.log(`Token Symbol: ${canonicalToken.symbol()}`)
+    const canonicalToken = await messageToInspect.assetAtOrigin()
+    // What is the symbol of the token being transferred?
+    const symbol = await canonicalToken!.symbol()
+    console.log(`Token Symbol: ${symbol}`)
+    // How many decimals does the token have?
+    const decimals = await canonicalToken!.decimals()
+    console.log(`Token Decimals: ${decimals}`)
+    // How many tokens were transferred? 
+    // Note: amount is an @ethersproject/bignumber
+    // Use ethers.utils.formatUnits to output human-readable BigNumber 
+    const adjustedValue = ethers.utils.formatUnits(messageToInspect.amount, decimals)
+    console.log(`Amount Transferred: ${adjustedValue}`)
 }
 
 (async () => {
