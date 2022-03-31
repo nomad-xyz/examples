@@ -1,6 +1,7 @@
 import { BridgeContext, TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 import { utils, BigNumber, providers, BytesLike } from 'ethers'
+import { NomadConfig } from '@nomad-xyz/configuration'
 import {
   nomadConfig,
   tokens,
@@ -14,21 +15,21 @@ import {
 } from '@/config'
 
 let nomad: BridgeContext
-import('@/config').then((a) => {
-  // `a` is imported and can be used here
-  nomad = instantiateNomad()
+import('@nomad-xyz/configuration').then((config) => {
+  console.log(config)
+  const nomadConfig = config.getBuiltin('development')
+  nomad = instantiateNomad(nomadConfig)
 });
 
 const { ethereum } = window as any
-// const nomad = instantiateNomad()
 
-function instantiateNomad(): BridgeContext {
+function instantiateNomad(config: NomadConfig): BridgeContext {
   const context = new BridgeContext(nomadConfig)
 
   // register rpc provider for each network
   // note: uses public rpcs, should substitute with your own rpc urls
-  nomadConfig.networks.forEach((network) => {
-    context.registerRpcProvider(network, nomadConfig.rpcs[network][0])
+  config.networks.forEach((network) => {
+    context.registerRpcProvider(network, config.rpcs[network][0])
   })
 
   return context
