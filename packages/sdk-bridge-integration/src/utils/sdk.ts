@@ -16,7 +16,7 @@ import {
 
 let nomad: BridgeContext
 import('@nomad-xyz/configuration').then((config) => {
-  console.log(config)
+  console.log('async config imported successfully:\n', config)
   const nomadConfig = config.getBuiltin('development')
   nomad = instantiateNomad(nomadConfig)
 });

@@ -8,8 +8,8 @@
       </div>
     </div>
     <h1>Nomad SDK Example UI</h1>
-    <a href="https://www.npmjs.com/package/@nomad-xyz/sdk" target="_blank" class="link">NPM Package</a>
-    <a href="https://docs.nomad.xyz" target="_blank" class="link">Docs</a>
+    <a href="https://www.npmjs.com/package/@nomad-xyz/sdk-bridge" target="_blank" class="link">NPM Package</a>
+    <a href="https://docs.nomad.xyz/sdk-bridge" target="_blank" class="link">Docs</a>
     <div class="main">
       <ui-bridge @connect="connect" :address="address" @new-tx="pushHistory" />
       <ui-balances v-if="address" :address="address" />
