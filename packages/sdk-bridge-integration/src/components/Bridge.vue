@@ -11,11 +11,11 @@
       <!-- amount -->
       <div class="amount form-row">
         <n-form-item label="Amount" path="sendData.amount" class="amount__item">
-          <n-input v-model="formValue.sendData.amount" placeholder="Enter amount" />
+          <n-input v-model:value="formValue.sendData.amount" placeholder="Enter amount" />
         </n-form-item>
         <n-form-item label="Token" path="sendData.token" class="amount__item">
           <n-select
-            v-model="formValue.sendData.token"
+            v-model:value="formValue.sendData.token"
             :options="tokenOptions"
             placeholder="Select token"
           />
@@ -24,14 +24,14 @@
       <!-- origin/destination networks -->
       <n-form-item label="Origin Network" path="sendData.originNetwork" class="form-row">
         <n-select
-          v-model="formValue.sendData.originNetwork"
+          v-model:value="formValue.sendData.originNetwork"
           :options="networkOptions"
           placeholder="Select origin network"
         />
       </n-form-item>
       <n-form-item label="Destination Network" path="sendData.destinationNetwork" class="form-row">
         <n-select
-          v-model="formValue.sendData.destinationNetwork"
+          v-model:value="formValue.sendData.destinationNetwork"
           :options="networkOptions"
           placeholder="Select destination network"
         />
