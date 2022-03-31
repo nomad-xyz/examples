@@ -1457,21 +1457,21 @@
     ethers "^5.4.6"
     web3 "^1.6.1"
 
-"@nomad-xyz/sdk-bridge@^1.0.0-rc.3":
-  version "1.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk-bridge/-/sdk-bridge-1.0.0-rc.3.tgz#92e2fee7dcbcf46c7bec854f89b0720f1494e7f2"
-  integrity sha512-XK9ha+3OAGkVQJ2IHvFmD+Hl+QnjC2IsXUdzmGH3cxV3AZXbWD1YmyHB1Et9it2F9UVPJdz8lAR60gsdXu4caA==
+"@nomad-xyz/sdk-bridge@^1.0.0-rc.4":
+  version "1.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk-bridge/-/sdk-bridge-1.0.0-rc.4.tgz#00bb1443f7d356f6d4636936d36adac86e5c6316"
+  integrity sha512-zz/gcmiSP8YgnIzdzjs2t3icBVAD6a7AC9u10cF2/Z5xPTrG3RItk4e/4kS4LWhc/KqniCQlNKncvjjVKf9DMw==
   dependencies:
     "@nomad-xyz/configuration" "0.1.0-rc.6"
     "@nomad-xyz/contracts-bridge" "^1.0.0-rc.2"
-    "@nomad-xyz/sdk" "^2.0.0-rc.3"
+    "@nomad-xyz/sdk" "^2.0.0-rc.4"
     ethers "^5.4.6"
     web3 "^1.6.1"
 
-"@nomad-xyz/sdk@^2.0.0-rc.3":
-  version "2.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk/-/sdk-2.0.0-rc.3.tgz#01fa1107b106d8c0ecc097db9de480de3032f488"
-  integrity sha512-oNRBd2EJwfHrdgi9D66mr7ojdqC+d1QNX39XhDMYc4m/xVY8d7KabDsKw25BxLWzcirKFtUhaBBjzOY0yEivNQ==
+"@nomad-xyz/sdk@^2.0.0-rc.4":
+  version "2.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@nomad-xyz/sdk/-/sdk-2.0.0-rc.4.tgz#a15cd43086083474b073dd4bdc4675e2f211d091"
+  integrity sha512-NSOhmeL1gIh6GO7NA0eBqO4f/j5WMi9Qo87RiHeFMWj0RAxvcEIz8RC9FjcC+aQsmPKlV+YQ5+BWI/jm5wR6RQ==
   dependencies:
     "@nomad-xyz/configuration" "0.1.0-rc.6"
     "@nomad-xyz/contracts-core" "^1.0.0-rc.2"

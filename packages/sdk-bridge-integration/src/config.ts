@@ -48,7 +48,6 @@ nomadConfig.bridgeGui = {
   }
 }
 
-
 /******** MISC CONFIG ********/
 // used to retrieve message proofs for processing tx on receiving chain
 export const s3URL = isProduction ? 'https://nomadxyz-production-proofs.s3.us-west-2.amazonaws.com/' : 'https://nomadxyz-development-proofs.s3.us-west-2.amazonaws.com/'

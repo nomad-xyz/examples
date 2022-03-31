@@ -10,7 +10,7 @@
   "dependencies": {
     "@nomad-xyz/configuration": "^0.1.0-rc.6",
     "@nomad-xyz/contracts-bridge": "^1.0.0-rc.2",
-    "@nomad-xyz/sdk-bridge": "^1.0.0-rc.3",
+    "@nomad-xyz/sdk-bridge": "^1.0.0-rc.4",
     "core-js": "^3.6.5",
     "ethers": "^5.5.3",
     "naive-ui": "^2.24.1",
