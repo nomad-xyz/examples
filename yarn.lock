@@ -6957,29 +6957,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"example-ui@workspace:packages/sdk-bridge-integration":
-  version: 0.0.0-use.local
-  resolution: "example-ui@workspace:packages/sdk-bridge-integration"
-  dependencies:
-    "@typescript-eslint/eslint-plugin": ^4.18.0
-    "@typescript-eslint/parser": ^4.18.0
-    "@vue/cli-plugin-babel": ~4.5.0
-    "@vue/cli-plugin-eslint": ~4.5.0
-    "@vue/cli-plugin-typescript": ^4.5.15
-    "@vue/cli-service": ~4.5.0
-    "@vue/compiler-sfc": ^3.0.0
-    "@vue/eslint-config-typescript": ^7.0.0
-    babel-eslint: ^10.1.0
-    core-js: ^3.6.5
-    eslint: ^6.7.2
-    eslint-plugin-vue: ^7.0.0
-    ethers: ^5.5.3
-    naive-ui: ^2.24.1
-    typescript: ~4.1.5
-    vue: ^3.0.0
-  languageName: unknown
-  linkType: soft
-
 "execa@npm:^0.8.0":
   version: 0.8.0
   resolution: "execa@npm:0.8.0"
@@ -12667,6 +12644,29 @@ __metadata:
   checksum: e2745db7ddc933ac6b73267adaa3f498c56651b26981131494f54eab15295dd8494a0420765092b8d67d3712a0bcb68be40de1f0d5eecbd3798f969f2d4fd591
   languageName: node
   linkType: hard
+
+"sdk-bridge-integration@workspace:packages/sdk-bridge-integration":
+  version: 0.0.0-use.local
+  resolution: "sdk-bridge-integration@workspace:packages/sdk-bridge-integration"
+  dependencies:
+    "@typescript-eslint/eslint-plugin": ^4.18.0
+    "@typescript-eslint/parser": ^4.18.0
+    "@vue/cli-plugin-babel": ~4.5.0
+    "@vue/cli-plugin-eslint": ~4.5.0
+    "@vue/cli-plugin-typescript": ^4.5.15
+    "@vue/cli-service": ~4.5.0
+    "@vue/compiler-sfc": ^3.0.0
+    "@vue/eslint-config-typescript": ^7.0.0
+    babel-eslint: ^10.1.0
+    core-js: ^3.6.5
+    eslint: ^6.7.2
+    eslint-plugin-vue: ^7.0.0
+    ethers: ^5.5.3
+    naive-ui: ^2.24.1
+    typescript: ~4.1.5
+    vue: ^3.0.0
+  languageName: unknown
+  linkType: soft
 
 "secp256k1@npm:^4.0.1":
   version: 4.0.3

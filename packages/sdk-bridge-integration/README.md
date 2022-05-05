@@ -1,4 +1,4 @@
-# example-ui
+# Nomad Bridge Integration
 
 This is an example bridge ui integration using the [Nomad Bridge SDK](https://www.npmjs.com/package/@nomad-xyz/sdk-bridge).
 
