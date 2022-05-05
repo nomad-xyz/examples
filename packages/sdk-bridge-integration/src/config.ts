@@ -3,7 +3,7 @@ import USDTIcon from './assets/USDT.png'
 import DEVIcon from './assets/DEV.png'
 import wADAIcon from './assets/wADA.png'
 
-import { TokenIdentifier } from '@nomad-xyz/sdk/nomad'
+import { TokenIdentifier } from '@nomad-xyz/sdk-bridge'
 
 export type NetworkName = 'kovan' | 'moonbasealpha' | 'rinkeby' | 'milkomedatestnet'
 export type TokenName = 'WETH' | 'USDT' | 'ETH' | 'DEV'

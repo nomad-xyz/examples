@@ -1,9 +1,8 @@
-import { NomadContext, dev } from '@nomad-xyz/sdk'
-import { TokenIdentifier } from '@nomad-xyz/sdk/nomad'
+import { TokenIdentifier } from '@nomad-xyz/sdk-bridge'
 import { Web3Provider } from '@ethersproject/providers'
 import { BigNumber, providers, utils, BytesLike } from 'ethers'
-import { TransferMessage } from '@nomad-xyz/sdk/nomad/messages/BridgeMessage'
-import { ERC20__factory } from '@nomad-xyz/contract-interfaces/bridge'
+import { TransferMessage } from '@nomad-xyz/sdk-bridge'
+import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 
 import {
   networks,
@@ -13,23 +12,20 @@ import {
   NetworkMetadata,
   TokenMetadata
 } from '../config'
+
+const { ethereum } = window as any
+type Environment = 'development' | 'production' | 'staging'
+export const env: Environment = 'development'
 export const s3URL = 'https://nomadxyz-development-proofs.s3.us-west-2.amazonaws.com/'
 // production s3URL: 'https://nomadxyz-production-proofs.s3.us-west-2.amazonaws.com/'
 
-const { ethereum } = window as any
-const nomad: NomadContext = instantiateNomad()
+/******** INSTANTIATE BRIDGE CONTEXT ********/
 
-function instantiateNomad(): NomadContext {
-  // configure for mainnet/testnet
-  const nomadContext: NomadContext = dev
-
-  // register rpc provider and signer for each network
-  Object.values(networks).forEach(({ name, rpcUrl }) => {
-    nomadContext.registerRpcProvider(name, rpcUrl)
-  })
-
-  return nomadContext
-}
+const nomadSDK = await import('@nomad-xyz/sdk-bridge')
+const nomad = new nomadSDK.BridgeContext(env)
+Object.values(networks).forEach(({ name, rpcUrl }) => {
+  nomad.registerRpcProvider(name, rpcUrl)
+})
 
 /******** TYPES ********/
 export interface SendData {
@@ -203,9 +199,9 @@ export function registerNewSigner(networkName: NetworkName) {
   // clear current signers and re-register
   nomad.clearSigners()
   const missingProviders = nomad.missingProviders
-  missingProviders.forEach((domain: number) => {
-    const network = getNetworkByDomainID(domain)
-    nomad.registerRpcProvider(networkName, network.rpcUrl)
+  missingProviders.forEach((domain: string) => {
+    const { rpcUrl } = networks[domain]
+    nomad.registerRpcProvider(domain, rpcUrl)
   })
 
   nomad.registerSigner(networkName, newSigner)
@@ -274,7 +270,7 @@ export async function send(
  */
 export async function getTxMessage(tx: TXData): Promise<TransferMessage> {
   const { origin, hash } = tx
-  return await TransferMessage.singleFromTransactionHash(
+  return await nomadSDK.TransferMessage.singleFromTransactionHash(
     nomad,
     origin,
     hash
@@ -292,7 +288,7 @@ export async function getTxMessage(tx: TXData): Promise<TransferMessage> {
 export async function processTx (tx: TXData) {
   // get transfer message
   const { origin, hash } = tx
-  const message = await TransferMessage.singleFromTransactionHash(nomad, origin, hash)
+  const message = await nomadSDK.TransferMessage.singleFromTransactionHash(nomad, origin, hash)
 
   // switch to destination network and register signer
   const destNetwork = getNetworkByDomainID(message.destination)
