@@ -7,16 +7,12 @@ export type NetworkMap = { [key: string]: NetworkMetadata }
 
 export type TokenMetadata = {
   nativeNetwork: NetworkName
-  symbol: string
   name: string
+  symbol: string
   icon: string
-  iconColors?: [string, string]
   decimals: number
-  coinGeckoId: string
-  tokenIdentifier: TokenIdentifier | null
+  tokenIdentifier: TokenIdentifier
   nativeOnly: boolean
-  minAmt: number
-  wrappedAsset?: string
 }
 
 export type NetworkMetadata = {

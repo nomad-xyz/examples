@@ -4,14 +4,12 @@ import { BigNumber, providers, utils, BytesLike } from 'ethers'
 import { TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 
+import { getNetworksFromConfig, tokens } from './config'
 import {
-  networks,
-  tokens,
   NetworkName,
-  TokenName,
   NetworkMetadata,
   TokenMetadata
-} from '../config'
+} from './types'
 import { TXData } from './types'
 
 const { ethereum } = window as any
@@ -24,7 +22,9 @@ export const s3URL = 'https://nomadxyz-development-proofs.s3.us-west-2.amazonaws
 
 const nomadSDK = await import('@nomad-xyz/sdk-bridge')
 const nomad = new nomadSDK.BridgeContext(env)
-Object.values(networks).forEach(({ name, rpcUrl }) => {
+export const networks = getNetworksFromConfig(nomad.conf, tokens)
+
+Object.values(networks).forEach(({ name, rpcUrl }: any) => {
   nomad.registerRpcProvider(name, rpcUrl)
 })
 
@@ -82,7 +82,7 @@ export function getNetworkByDomainID(domainID: number): NetworkMetadata {
  * @returns Balance by network
  */
 export async function getNomadBalances(
-  tokenName: TokenName,
+  tokenName: string,
   address: string
 ): Promise<Record<number, string> | undefined> {
   const { tokenIdentifier, decimals, symbol } = tokens[tokenName]
@@ -132,7 +132,7 @@ export async function getNomadBalance(
  * @param address The user's wallet address
  * @returns Balance by network
  */
-export async function getBalanceFromWallet(networkName: NetworkName, tokenName: TokenName, address: string) {
+export async function getBalanceFromWallet(networkName: NetworkName, tokenName: string, address: string) {
   console.log('gettingbalanceFromwallet')
 
   const network = networks[networkName]
@@ -205,7 +205,7 @@ export async function send(
   originNetworkName: NetworkName,
   destinationNetworkName: NetworkName,
   amount: number,
-  tokenName: TokenName,
+  tokenName: string,
   destinationAddr: string
 ): Promise<TransferMessage> {
   const token = tokens[tokenName]

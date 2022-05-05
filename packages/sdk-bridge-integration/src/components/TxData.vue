@@ -25,12 +25,12 @@ import { TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { NButton } from 'naive-ui'
 import {
   getTxMessage,
-  TXData,
   fromBytes32,
   resolveRepresentation,
   getStatusText,
   processTx
-} from '@/utils/sdk';
+} from '../utils/sdk';
+import { TXData } from '../utils/types'
 
 export default defineComponent({
   name: 'Transaction Data',
