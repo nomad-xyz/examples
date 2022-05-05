@@ -2,7 +2,13 @@
 
 This is an example bridge ui integration using the [Nomad Bridge SDK](https://www.npmjs.com/package/@nomad-xyz/sdk-bridge).
 
-Further documentation available [here](https://docs.nomad.xyz/bridge).
+- [Nomad Core SDK](https://docs.nomad.xyz/sdk/)
+- [Nomad Bridge SDK](https://docs.nomad.xyz/sdk-bridge/)
+- [Multi-Provider](https://docs.nomad.xyz/multi-provider/)
+- [Nomad Docs](https://docs.nomad.xyz/bridge)
+- [Nomad GUI](https://app.nomad.xyz)
+- [Nomad Monorepo](https://github.com/nomad-xyz/monorepo)
+- [Nomad GUI Repo](https://github.com/nomad-xyz/nomad-app)
 
 ## Project setup
 
@@ -33,9 +39,48 @@ npm run lint
 npm run test:unit
 ```
 
-## Integration notes
+## Integration setup
 
-IMPORTANT: The current testnet deploy does not include a bridge between Kovan and Moonbase Alpha. This is known as the Hub and Spokes model. On Mainnet, we think of Rinkeby (on mainnet: Ethereum) as the hub which would be connected to every other Nomad-supported chain. The spokes (Kovan and Moonbase Alpha) would be connected to Rinkeby, but would not be connected to each other.
+1. Configure webpack with `wasm`, `syncWebAssembly` and `topLevelAwait` (see `vue.config.js`):
+
+```ts
+module: {
+  rules: [
+    {
+      test: /\.wasm$/,
+      type: 'webassembly/sync',
+    },
+  ],
+},
+plugins: [
+  new webpack.ProvidePlugin({
+    Buffer: ['buffer', 'Buffer'],
+  }),
+],
+devtool: 'source-map',
+experiments: {
+  syncWebAssembly: true,
+  topLevelAwait: true,
+},
+```
+
+2. Instantiate Bridge Context
+
+```ts
+const nomadSDK = await import('@nomad-xyz/sdk-bridge')
+// possible values: development, staging or production
+const nomad = new nomadSDK.BridgeContext('development')
+// nomad.conf contains data about each network, such as chainId, domainId, latency time, etc
+const { rpcs } = nomad.conf
+
+// register rpcs for each network
+// note these are public rpcs
+Object.keys(rpcs).forEach((network: string) => {
+  nomad.registerRpcProvider(network, rpcs[network][0])
+})
+```
+
+## Integration notes
 
 Validation:
  - Some native assets should be disabled on non-native chains. For example, native ETH is not available on Moonbeam, user should select WETH
@@ -50,6 +95,7 @@ Validation:
 Gas:
  - There are no additional fees associated with Nomad, just pay gas!
  - Gas fees are paid in the native token on each chain (e.g. ETH on Ethereum or GLMR on Moonbeam). Thus, the amount of x token sent is the amount they will receive on the destination chain
+ - When sending to Ethereum, user must return to complete their transaction. They will need to pay gas on Ethereum, but gas is actually 1/5 what it estimates. User can use any wallet and it will be sent to whatever recipient address they specified.
 
 Other:
  - Bridging takes on average 35-60 minutes and, depending on the destination chain, user may need to return to pay for processing to receive their funds.
