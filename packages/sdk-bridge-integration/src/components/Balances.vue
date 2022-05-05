@@ -30,11 +30,11 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { NDataTable, NButton } from 'naive-ui';
-import { getNomadBalances, connectWallet } from '@/utils/sdk';
-import { tokens, TokenName } from '@/config';
+import { getNomadBalances, connectWallet } from '../utils/sdk';
+import { tokens } from '../utils/config';
 
 export default defineComponent({
-  name: 'Balances',
+  name: 'NomadBalances',
   props: {
     address: {
       type: String,
@@ -75,7 +75,7 @@ export default defineComponent({
       this.loading = true
       let balances: any = []
       for (const token in tokens) {
-        const tokenBalances = await getNomadBalances(token as TokenName, this.address)
+        const tokenBalances = await getNomadBalances(token, this.address)
         balances.push({ asset: tokens[token].symbol, ...tokenBalances })
       }
       this.balances = balances

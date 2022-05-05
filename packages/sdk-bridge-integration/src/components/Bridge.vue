@@ -57,8 +57,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { NForm, NFormItem, NInput, NSelect, NButton, NCard } from 'naive-ui';
-import { tokens, networks, TokenName, NetworkName } from '@/config'
-import { switchNetwork, registerNewSigner, send, TXData } from '@/utils/sdk'
+import { tokens } from '../utils/config'
+import { NetworkName, TXData } from '../utils/types'
+import {
+  networks,
+  switchNetwork,
+  registerNewSigner,
+  send,
+} from '../utils/sdk'
 
 function generateTokenOptions() {
   return Object.keys(tokens).map(t => {
@@ -75,13 +81,13 @@ function generateNetworkOptions() {
 
 interface SendData {
   amount: number | null
-  token: TokenName | null
+  token: string | null
   originNetwork: NetworkName | null
   destinationNetwork: NetworkName | null
 }
 
 export default defineComponent({
-  name: 'Bridge',
+  name: 'NomadBridge',
   emits: ['connect', 'newTx'],
   props: {
     address: {

@@ -1,52 +1,32 @@
-import { NomadContext, dev } from '@nomad-xyz/sdk'
-import { TokenIdentifier } from '@nomad-xyz/sdk/nomad'
+import { TokenIdentifier } from '@nomad-xyz/sdk-bridge'
 import { Web3Provider } from '@ethersproject/providers'
 import { BigNumber, providers, utils, BytesLike } from 'ethers'
-import { TransferMessage } from '@nomad-xyz/sdk/nomad/messages/BridgeMessage'
-import { ERC20__factory } from '@nomad-xyz/contract-interfaces/bridge'
+import { TransferMessage } from '@nomad-xyz/sdk-bridge'
+import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 
+import { getNetworksFromConfig, tokens } from './config'
 import {
-  networks,
-  tokens,
   NetworkName,
-  TokenName,
   NetworkMetadata,
   TokenMetadata
-} from '../config'
+} from './types'
+import { TXData } from './types'
+
+const { ethereum } = window as any
+type Environment = 'development' | 'production' | 'staging'
+export const env: Environment = 'development'
 export const s3URL = 'https://nomadxyz-development-proofs.s3.us-west-2.amazonaws.com/'
 // production s3URL: 'https://nomadxyz-production-proofs.s3.us-west-2.amazonaws.com/'
 
-const { ethereum } = window as any
-const nomad: NomadContext = instantiateNomad()
+/******** INSTANTIATE BRIDGE CONTEXT ********/
 
-function instantiateNomad(): NomadContext {
-  // configure for mainnet/testnet
-  const nomadContext: NomadContext = dev
+const nomadSDK = await import('@nomad-xyz/sdk-bridge')
+const nomad = new nomadSDK.BridgeContext(env)
+export const networks = getNetworksFromConfig(nomad.conf, tokens)
 
-  // register rpc provider and signer for each network
-  Object.values(networks).forEach(({ name, rpcUrl }) => {
-    nomadContext.registerRpcProvider(name, rpcUrl)
-  })
-
-  return nomadContext
-}
-
-/******** TYPES ********/
-export interface SendData {
-  isNative: boolean
-  originNetwork: number
-  destNetwork: number
-  asset: TokenIdentifier
-  amnt: number
-  recipient: string
-  ethersOverrides: object
-}
-
-export type TXData = {
-  origin: NetworkName
-  destination: NetworkName
-  hash: string
-}
+Object.values(networks).forEach(({ name, rpcUrl }: any) => {
+  nomad.registerRpcProvider(name, rpcUrl)
+})
 
 /******** CONFIGS ********/
 
@@ -102,7 +82,7 @@ export function getNetworkByDomainID(domainID: number): NetworkMetadata {
  * @returns Balance by network
  */
 export async function getNomadBalances(
-  tokenName: TokenName,
+  tokenName: string,
   address: string
 ): Promise<Record<number, string> | undefined> {
   const { tokenIdentifier, decimals, symbol } = tokens[tokenName]
@@ -152,7 +132,7 @@ export async function getNomadBalance(
  * @param address The user's wallet address
  * @returns Balance by network
  */
-export async function getBalanceFromWallet(networkName: NetworkName, tokenName: TokenName, address: string) {
+export async function getBalanceFromWallet(networkName: NetworkName, tokenName: string, address: string) {
   console.log('gettingbalanceFromwallet')
 
   const network = networks[networkName]
@@ -203,9 +183,9 @@ export function registerNewSigner(networkName: NetworkName) {
   // clear current signers and re-register
   nomad.clearSigners()
   const missingProviders = nomad.missingProviders
-  missingProviders.forEach((domain: number) => {
-    const network = getNetworkByDomainID(domain)
-    nomad.registerRpcProvider(networkName, network.rpcUrl)
+  missingProviders.forEach((domain: string) => {
+    const { rpcUrl } = networks[domain]
+    nomad.registerRpcProvider(domain, rpcUrl)
   })
 
   nomad.registerSigner(networkName, newSigner)
@@ -225,7 +205,7 @@ export async function send(
   originNetworkName: NetworkName,
   destinationNetworkName: NetworkName,
   amount: number,
-  tokenName: TokenName,
+  tokenName: string,
   destinationAddr: string
 ): Promise<TransferMessage> {
   const token = tokens[tokenName]
@@ -274,7 +254,7 @@ export async function send(
  */
 export async function getTxMessage(tx: TXData): Promise<TransferMessage> {
   const { origin, hash } = tx
-  return await TransferMessage.singleFromTransactionHash(
+  return await nomadSDK.TransferMessage.singleFromTransactionHash(
     nomad,
     origin,
     hash
@@ -292,7 +272,7 @@ export async function getTxMessage(tx: TXData): Promise<TransferMessage> {
 export async function processTx (tx: TXData) {
   // get transfer message
   const { origin, hash } = tx
-  const message = await TransferMessage.singleFromTransactionHash(nomad, origin, hash)
+  const message = await nomadSDK.TransferMessage.singleFromTransactionHash(nomad, origin, hash)
 
   // switch to destination network and register signer
   const destNetwork = getNetworkByDomainID(message.destination)

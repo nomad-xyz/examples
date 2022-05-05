@@ -21,19 +21,19 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { utils, BigNumber } from 'ethers'
-import { TransferMessage } from '@nomad-xyz/sdk/nomad/messages/BridgeMessage'
+import { TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { NButton } from 'naive-ui'
 import {
   getTxMessage,
-  TXData,
   fromBytes32,
   resolveRepresentation,
   getStatusText,
   processTx
-} from '@/utils/sdk';
+} from '../utils/sdk';
+import { TXData } from '../utils/types'
 
 export default defineComponent({
-  name: 'Transaction Data',
+  name: 'NomadTransactionData',
   props: {
     tx: {
       type: Object,

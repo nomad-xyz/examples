@@ -2,19 +2,23 @@
     "name": "@nomad-xyz/examples",
     "private": true,
     "workspaces": [
-      "packages/sdk-bridge-integration",
-      "packages/sdk-quickstart",
-      "packages/xapps"
+        "packages/sdk-bridge-integration",
+        "packages/sdk-quickstart",
+        "packages/xapps"
     ],
     "scripts": {
-      "build": "yarn workspaces foreach -Atv run build",
-      "compile": "yarn workspaces foreach -Apv run compile",
-      "sdk-bridge-integration": "yarn workspace @nomad-xyz/sdk-bridge-integration",
-      "sdk-quickstart": "yarn workspace @nomad-xyz/sdk-quickstart",
-      "xapp-example": "yarn workspace @nomad-xyz/xapp-example",
-      "lint": "yarn workspaces foreach -Apv run lint",
-      "prettier": "yarn workspaces foreach -Apv run prettier",
-      "test": "yarn workspaces foreach -Apv --exclude @nomad-xyz/deploy  --exclude @nomad-xyz/local-environment run test"
+        "build": "yarn workspaces foreach -Atv run build",
+        "compile": "yarn workspaces foreach -Apv run compile",
+        "sdk-bridge-integration": "yarn workspace @nomad-xyz/sdk-bridge-integration",
+        "sdk-quickstart": "yarn workspace @nomad-xyz/sdk-quickstart",
+        "xapp-example": "yarn workspace @nomad-xyz/xapp-example",
+        "lint": "yarn workspaces foreach -Apv run lint",
+        "prettier": "yarn workspaces foreach -Apv run prettier",
+        "test": "yarn workspaces foreach -Apv --exclude @nomad-xyz/deploy  --exclude @nomad-xyz/local-environment run test"
     },
-    "packageManager": "yarn@3.2.0"
-  }
+    "packageManager": "yarn@3.2.0",
+    "dependencies": {
+        "@nomad-xyz/contracts-bridge": "^1.0.0-rc.2",
+        "@nomad-xyz/sdk-bridge": "^1.0.0-rc.12"
+    }
+}

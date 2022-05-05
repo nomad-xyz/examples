@@ -11,10 +11,10 @@
     <a href="https://www.npmjs.com/package/@nomad-xyz/sdk" target="_blank" class="link">NPM Package</a>
     <a href="https://docs.nomad.xyz" target="_blank" class="link">Docs</a>
     <div class="main">
-      <bridge @connect="connect" :address="address" @new-tx="pushHistory" />
-      <balances v-if="address" :address="address" />
+      <nomad-bridge @connect="connect" :address="address" @new-tx="pushHistory" />
+      <nomad-balances v-if="address" :address="address" />
       <div v-else class="spacer"></div>
-      <history :tx-history="history" />
+      <nomad-history :tx-history="history" />
     </div>
   </div>
 </template>
@@ -22,17 +22,18 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { NButton, NTag } from 'naive-ui';
-import { connectWallet, truncateAddr, TXData } from '@/utils/sdk'
-import Bridge from './components/Bridge.vue';
-import Balances from './components/Balances.vue';
-import History from './components/History.vue';
+import { connectWallet, truncateAddr } from './utils/sdk';
+import { TXData } from './utils/types';
+import NomadBridge from './components/Bridge.vue';
+import NomadBalances from './components/Balances.vue';
+import NomadHistory from './components/History.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
-    Bridge,
-    Balances,
-    History,
+    NomadBridge,
+    NomadBalances,
+    NomadHistory,
     NButton,
     NTag
   },
