@@ -34,7 +34,7 @@ import { getNomadBalances, connectWallet } from '../utils/sdk';
 import { tokens } from '../utils/config';
 
 export default defineComponent({
-  name: 'Balances',
+  name: 'NomadBalances',
   props: {
     address: {
       type: String,

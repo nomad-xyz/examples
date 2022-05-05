@@ -81,13 +81,13 @@ function generateNetworkOptions() {
 
 interface SendData {
   amount: number | null
-  token: TokenName | null
+  token: string | null
   originNetwork: NetworkName | null
   destinationNetwork: NetworkName | null
 }
 
 export default defineComponent({
-  name: 'Bridge',
+  name: 'NomadBridge',
   emits: ['connect', 'newTx'],
   props: {
     address: {

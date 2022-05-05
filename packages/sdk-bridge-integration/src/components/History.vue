@@ -10,8 +10,9 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
 import { NDataTable } from 'naive-ui';
-import { truncateAddr, TXData } from '@/utils/sdk';
-import TxData from './TxData.vue'
+import { truncateAddr } from '../utils/sdk';
+import { TXData } from '../utils/types'
+import NomadTransactionData from './TxData.vue'
 
 const createColumns = () => {
   return [
@@ -20,7 +21,7 @@ const createColumns = () => {
       expandable: () => true,
       renderExpand: (rowData: TXData) => {
         return h(
-          TxData,
+          NomadTransactionData,
           { tx: rowData }
         )
       }
@@ -44,7 +45,7 @@ const createColumns = () => {
 }
 
 export default defineComponent({
-  name: 'History',
+  name: 'NomadHistory',
   components: {
     NDataTable
   },

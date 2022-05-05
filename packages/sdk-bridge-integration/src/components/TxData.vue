@@ -33,7 +33,7 @@ import {
 import { TXData } from '../utils/types'
 
 export default defineComponent({
-  name: 'Transaction Data',
+  name: 'NomadTransactionData',
   props: {
     tx: {
       type: Object,
