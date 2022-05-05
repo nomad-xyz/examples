@@ -1,4 +1,4 @@
-import { BridgeContext, TransferMessage } from '@nomad-xyz/sdk-bridge'
+// import { BridgeContext, TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { ERC20__factory } from '@nomad-xyz/contracts-bridge'
 import { utils, BigNumber, providers, BytesLike } from 'ethers'
 import * as config from '@nomad-xyz/configuration'
@@ -13,21 +13,15 @@ import {
   s3URL,
 } from '@/config'
 const nomadConfig = config.getBuiltin('development')
-const nomad: BridgeContext = instantiateNomad()
-
+let nomad: any
+let sdk: any
+(async () => {
+  sdk = await import('@nomad-xyz/sdk-bridge')
+  const context = new sdk.BridgeContext('development')
+  console.log(context)
+  nomad = context
+})
 const { ethereum } = window as any
-
-function instantiateNomad(): BridgeContext {
-  const context = new BridgeContext('development')
-
-  // register rpc provider for each network
-  // note: uses public rpcs, should substitute with your own rpc urls
-  nomadConfig.networks.forEach((network) => {
-    context.registerRpcProvider(network, nomadConfig.rpcs[network][0])
-  })
-
-  return context
-}
 
 /******** TYPES ********/
 export interface SendData {
@@ -246,7 +240,7 @@ export async function send(
   amount: number,
   tokenName: TokenName,
   destinationAddr: string
-): Promise<TransferMessage> {
+): Promise<any> {
   const token = tokens[tokenName]
   const isNative = isNativeToken(originNetworkName, token)
 
@@ -259,7 +253,7 @@ export async function send(
   // format amount according to token decimals
   const amnt = utils.parseUnits(amount.toString(), token.decimals)
 
-  let transferMessage: TransferMessage
+  let transferMessage: any
   // if ETH Helper contract exists, native token must be wrapped
   // before sending, use sendNative
   const ethHelper = nomad.getBridge(originDomain)?.ethHelper

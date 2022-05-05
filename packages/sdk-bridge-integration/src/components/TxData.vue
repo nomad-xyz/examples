@@ -21,7 +21,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { utils, BigNumber } from 'ethers'
-import { TokenIdentifier, TransferMessage } from '@nomad-xyz/sdk-bridge'
 import { NButton } from 'naive-ui'
 import {
   getTxMessage,
@@ -70,7 +69,7 @@ export default defineComponent({
       // get token
       const token = await resolveRepresentation(
         message.origin,
-        message.token as TokenIdentifier
+        message.token
       )
       // token symbol
       this.tokenSymbol = await token?.symbol()!
@@ -87,7 +86,7 @@ export default defineComponent({
         }
       }, 60000)
     },
-    async getStatus(message: TransferMessage) {
+    async getStatus(message: any) {
       if (!message) return
       const status = (await message.events()).status
       console.log('status: ', status)
