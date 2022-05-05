@@ -12,6 +12,7 @@ import {
   NetworkMetadata,
   TokenMetadata
 } from '../config'
+import { TXData } from './types'
 
 const { ethereum } = window as any
 type Environment = 'development' | 'production' | 'staging'
@@ -26,23 +27,6 @@ const nomad = new nomadSDK.BridgeContext(env)
 Object.values(networks).forEach(({ name, rpcUrl }) => {
   nomad.registerRpcProvider(name, rpcUrl)
 })
-
-/******** TYPES ********/
-export interface SendData {
-  isNative: boolean
-  originNetwork: number
-  destNetwork: number
-  asset: TokenIdentifier
-  amnt: number
-  recipient: string
-  ethersOverrides: object
-}
-
-export type TXData = {
-  origin: NetworkName
-  destination: NetworkName
-  hash: string
-}
 
 /******** CONFIGS ********/
 
